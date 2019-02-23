@@ -4,5 +4,6 @@
   ],
   "devDependencies": {
     "automerge": true
-  }
+  },
+  "ignoreDeps": ["react"]
 }
