@@ -5,7 +5,7 @@ import { Exposable, expose } from 'comlinkjs';
 import { wrap } from 'comlinkjs/messagechanneladapter';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import './webview';
-import { WebViewProps, WebView, WebViewMessageEvent } from './webview';
+import { WebViewProps, WebView, WebViewMessageEvent, WebViewNavigation } from './webview';
 import WebViewMessageChannel from './endpoint';
 
 interface HighOrderComponentCreator<Props> {
@@ -31,17 +31,31 @@ export function withComlinkExpose<Props extends WebViewProps>(rootObj: Exposable
 
             onMessage = (event: WebViewMessageEvent) => {
                 this.messageChannel.onMessage(event);
+                // delegate to wrapped component
+                const { onMessage } = this.props;
+                if (onMessage) {
+                    onMessage(event);
+                }
+            }
+
+            onNavigationStateChange = (event: WebViewNavigation) => {
+                const { onNavigationStateChange } = this.props;
+                if (onNavigationStateChange) {
+                    onNavigationStateChange(event);
+                }
             }
 
             render() {
                 const {
                     onMessage,
+                    onNavigationStateChange,
                     ...props
                 } = this.props;
 
                 return <WrappedComponent
                     ref={this.setWebViewRef}
                     onMessage={this.onMessage}
+                    onNavigationStateChange={this.onNavigationStateChange}
                     {...props as Props}
                 />;
             }
