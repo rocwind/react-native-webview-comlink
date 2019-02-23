@@ -1,7 +1,11 @@
-import 'message-port-polyfill';
+/* eslint-disable import/first */
+import { applyPolyfill } from 'message-port-polyfill';
+applyPolyfill(); // need to force applyPolyfill for ios issue
+
 import { Endpoint } from 'comlinkjs';
 import { wrap } from 'comlinkjs/messagechanneladapter';
 import { beginWait } from 'wait-ready';
+
 
 export function createEndpoint(): Endpoint {
     return wrap({
@@ -44,6 +48,3 @@ function checkEndpointReady() {
 }
 
 checkEndpointReady();
-
-
-// TODO: handle ios9 message port issue

@@ -1,12 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, WebView, Alert } from 'react-native';
+import { withComlinkExpose } from './lib/native';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const rootObj = {
+      alert: (title, message, onYes, onNo) => {
+        Alert.alert(title, message, [{
+          text: 'YES',
+          onPress: onYes,
+        }, {
+          text: 'NO',
+          onPress: onNo,
+        }]);
+      },
+    };
+
+    this.WebViewComponent = withComlinkExpose(rootObj)(WebView);
+  }
+
   render() {
+    const uri = 'http://localhost:3000';
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
+      <this.WebViewComponent
+        style={styles.container}
+        source={{ uri }}
+        >
+      </this.WebViewComponent>
     );
   }
 }

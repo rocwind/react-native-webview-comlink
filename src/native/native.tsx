@@ -1,4 +1,5 @@
 import 'message-port-polyfill';
+import './polyfill';
 import * as React from 'react';
 import { ComponentType, Component } from 'react';
 import { Exposable, expose } from 'comlinkjs';

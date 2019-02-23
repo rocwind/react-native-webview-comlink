@@ -5,6 +5,9 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
+    "comlinkjs": "^3.2.0",
+    "hoist-non-react-statics": "^3.3.0",
+    "message-port-polyfill": "^0.1.0",
     "react": "16.6.3",
     "react-native": "0.58.5"
   },

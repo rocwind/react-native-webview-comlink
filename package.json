@@ -9,8 +9,9 @@
     "lib/"
   ],
   "scripts": {
-    "clean": "del-cli lib",
+    "clean": "del-cli lib && del-cli examples/web/src/lib && del-cli examples/native/lib",
     "build": "npm run clean && npm run compile && npm run rollup-native && npm run rollup-web",
+    "postbuild": "cpr lib examples/web/src/lib && cpr lib examples/native/lib",
     "compile": "npm run compile-native && npm run compile-web",
     "compile-native": "tsc -p src/native --outDir lib -d",
     "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs",
@@ -53,6 +54,7 @@
     "@babel/core": "7.3.3",
     "@babel/preset-env": "7.3.1",
     "comlinkjs": "3.2.0",
+    "cpr": "^3.0.1",
     "del-cli": "1.1.0",
     "jest": "24.1.0",
     "react": "16.6.3",
