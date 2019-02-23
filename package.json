@@ -16,9 +16,9 @@
     "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs",
     "compile-web": "tsc -p src/web --outDir lib -d",
     "rollup-web": "rollup -c rollup.config.web.js && babel lib/web.bundle.js --out-file lib/web.bundle.js",
-    "preversion": "npm test && npm run build",
+    "preversion": "npm test",
     "postversion": "git push origin master && git push origin --tags && npm publish",
-    "test": "jest"
+    "test": "npm run build && jest"
   },
   "repository": {
     "type": "git",
