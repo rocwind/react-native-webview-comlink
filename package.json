@@ -1,0 +1,64 @@
+{
+  "name": "react-native-webview-comlink",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/native.bundle.js",
+  "module": "lib/native.js",
+  "types": "lib/native.d.ts",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "clean": "del-cli lib",
+    "build": "npm run clean && npm run compile && npm run rollup-native && npm run rollup-web",
+    "compile": "npm run compile-native && npm run compile-web",
+    "compile-native": "tsc -p src/native --outDir lib -d",
+    "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs",
+    "compile-web": "tsc -p src/web --outDir lib -d",
+    "rollup-web": "rollup -c rollup.config.web.js && babel lib/web.bundle.js --out-file lib/web.bundle.js",
+    "preversion": "npm test && npm run build",
+    "postversion": "git push origin master && git push origin --tags && npm publish",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rocwind/react-native-webview-comlink.git"
+  },
+  "keywords": [
+    "comlink",
+    "rpc",
+    "react-native",
+    "webview"
+  ],
+  "author": "Roc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rocwind/react-native-webview-comlink/issues"
+  },
+  "homepage": "https://github.com/rocwind/react-native-webview-comlink#readme",
+  "peerDependencies": {
+    "comlinkjs": ">=3.0.0",
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "@types/react": "^16.8.4",
+    "@types/react-native": "^0.57.37",
+    "hoist-non-react-statics": "^3.3.0",
+    "message-port-polyfill": "^0.1.0",
+    "wait-ready": "^0.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "comlinkjs": "^3.1.1",
+    "del-cli": "^1.1.0",
+    "jest": "^24.1.0",
+    "react": "16.6.3",
+    "react-native": "^0.58.5",
+    "rollup": "^1.2.2",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "typescript": "^3.3.3"
+  }
+}
