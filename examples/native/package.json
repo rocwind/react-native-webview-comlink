@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios"
+  },
+  "dependencies": {
+    "react": "16.6.3",
+    "react-native": "0.58.5"
+  },
+  "devDependencies": {
+    "metro-react-native-babel-preset": "^0.52.0"
+  },
+  "private": true
+}
