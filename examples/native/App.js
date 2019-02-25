@@ -23,6 +23,8 @@ export default class App extends React.Component {
 
   render() {
     const uri = 'http://localhost:3000';
+    // localhost works for ios simulator, for other case please use host address
+    // const uri = 'http://<you host ip address>:3000';
     return (
       <this.WebViewComponent
         style={styles.container}
