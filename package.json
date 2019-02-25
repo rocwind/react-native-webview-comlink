@@ -45,7 +45,7 @@
     "@types/react": "^16.8.4",
     "@types/react-native": "^0.57.37",
     "hoist-non-react-statics": "^3.3.0",
-    "message-port-polyfill": "^0.1.0",
+    "message-port-polyfill": "^0.2.0",
     "wait-ready": "^0.3.0"
   },
   "devDependencies": {
