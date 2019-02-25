@@ -19,7 +19,9 @@ export default class App extends React.Component {
       },
     };
 
-    this.WebViewComponent = withComlinkExpose(rootObj)(WebView);
+    this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true })(WebView);
+
+    this.ref = React.createRef();
   }
 
   render() {
@@ -30,6 +32,7 @@ export default class App extends React.Component {
       <this.WebViewComponent
         style={styles.container}
         source={{ uri }}
+        ref={this.ref}
         >
       </this.WebViewComponent>
     );
