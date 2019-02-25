@@ -1,4 +1,3 @@
-import 'proxy-polyfill';
 import { createEndpoint, waitEndpointReady } from 'react-native-webview-comlink/lib/web';
 import { proxy, proxyValue } from 'comlinkjs';
 
@@ -12,10 +11,9 @@ const target = {
 // create a comlinkjs proxy for the rpc call
 const targetProxy = proxy(createEndpoint(), target);
 
-// make sure the call will be delivered after endpoint ready
+// to make sure the callback functions go through proxy
 const rpc = Object.keys(target).reduce((obj, key) => {
-  obj[key] = (...args) => waitEndpointReady().then(() => {
-    // to make sure the callback functions go through proxy
+  obj[key] = (...args) => {
     const wrappedArgs = args.map(value => {
       if (typeof value !== 'function') {
         return value;
@@ -26,7 +24,7 @@ const rpc = Object.keys(target).reduce((obj, key) => {
     });
 
     return targetProxy[key].apply(target, wrappedArgs);
-  });
+  };
 
   return obj;
 }, {});

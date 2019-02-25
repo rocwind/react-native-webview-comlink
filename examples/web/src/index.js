@@ -1,3 +1,7 @@
+// to polyfill
+import 'core-js';
+// to polyfill proxy - which is not covered by core-js
+import 'proxy-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
