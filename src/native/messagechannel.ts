@@ -5,7 +5,15 @@ export default class WebViewMessageChannel implements StringMessageChannel {
     private webview: WebView;
     private listeners: EventListenerOrEventListenerObject[] = [];
 
+    constructor(private debug: boolean) {
+
+    }
+
     send(data: string) {
+        if (this.debug) {
+            console.log(`[WebViewComlink] sending message to webview:`);
+            console.log(data);
+        }
         this.webview.postMessage(data);
     }
 
@@ -33,6 +41,11 @@ export default class WebViewMessageChannel implements StringMessageChannel {
     }
 
     onMessage(event: WebViewMessageEvent) {
+        if (this.debug) {
+            console.log(`[WebViewComlink] received message from webview:`);
+            console.log(JSON.stringify(event.nativeEvent.data));
+        }
+
         this.listeners.forEach((listener) => {
             if (typeof listener === 'function') {
                 listener(event.nativeEvent);

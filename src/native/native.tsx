@@ -7,13 +7,17 @@ import { wrap } from 'comlinkjs/messagechanneladapter';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import './webview';
 import { WebViewProps, WebView, WebViewMessageEvent, WebViewNavigation } from './webview';
-import WebViewMessageChannel from './endpoint';
+import WebViewMessageChannel from './messagechannel';
 
 interface HighOrderComponentCreator<Props> {
     (component: ComponentType<Props>): ComponentType<Props>
 }
 
-export function withComlinkExpose<Props extends WebViewProps>(rootObj: Exposable): HighOrderComponentCreator<Props> {
+interface Config {
+    debug?: boolean;
+}
+
+export function withComlinkExpose<Props extends WebViewProps>(rootObj: Exposable, config: Config = {}): HighOrderComponentCreator<Props> {
     return (WrappedComponent: ComponentType<Props>) => {
         class ComponentWithComlinkExpose extends Component<Props> {
             private messageChannel: WebViewMessageChannel;
@@ -22,7 +26,7 @@ export function withComlinkExpose<Props extends WebViewProps>(rootObj: Exposable
                 super(props);
 
                 // connect and expose the rootObj
-                this.messageChannel = new WebViewMessageChannel();
+                this.messageChannel = new WebViewMessageChannel(config.debug);
                 expose(rootObj, wrap(this.messageChannel));
             }
 
