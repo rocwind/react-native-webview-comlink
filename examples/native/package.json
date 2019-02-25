@@ -8,9 +8,9 @@
     "comlinkjs": "^3.2.0",
     "hoist-non-react-statics": "^3.3.0",
     "jsc-android": "^236355.1.1",
-    "message-port-polyfill": "^0.1.0",
     "react": "16.6.3",
-    "react-native": "0.58.5"
+    "react-native": "0.58.5",
+    "react-native-webview-comlink": "^0.1.0"
   },
   "devDependencies": {
     "metro-react-native-babel-preset": "^0.52.0"

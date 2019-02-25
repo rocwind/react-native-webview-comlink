@@ -9,9 +9,9 @@
     "lib/"
   ],
   "scripts": {
-    "clean": "del-cli lib && del-cli examples/web/src/lib && del-cli examples/native/lib",
+    "clean": "del-cli lib && del-cli examples/web/node_modules/react-native-webview-comlink/lib && del-cli examples/native/node_modules/react-native-webview-comlink/lib",
     "build": "npm run clean && npm run compile && npm run rollup-native && npm run rollup-web",
-    "postbuild": "cpr lib examples/web/src/lib && cpr lib examples/native/lib",
+    "postbuild": "cpr lib examples/web/node_modules/react-native-webview-comlink/lib && cpr lib examples/native/node_modules/react-native-webview-comlink/lib",
     "compile": "npm run compile-native && npm run compile-web",
     "compile-native": "tsc -p src/native --outDir lib -d",
     "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs",

@@ -1,5 +1,5 @@
 import 'proxy-polyfill';
-import { createEndpoint, waitEndpointReady } from './lib/web';
+import { createEndpoint, waitEndpointReady } from 'react-native-webview-comlink/lib/web';
 import { proxy, proxyValue } from 'comlinkjs';
 
 export const rpcReady = waitEndpointReady;
