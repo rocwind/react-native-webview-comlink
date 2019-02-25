@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, WebView, Alert } from 'react-native';
-import { withComlinkExpose } from 'react-native-webview-comlink/lib/native';
+import { withComlinkExpose } from 'react-native-webview-comlink';
 
 export default class App extends React.Component {
   constructor(props) {

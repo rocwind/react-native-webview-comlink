@@ -14,7 +14,7 @@
     "postbuild": "cpr lib examples/web/node_modules/react-native-webview-comlink/lib && cpr lib examples/native/node_modules/react-native-webview-comlink/lib",
     "compile": "npm run compile-native && npm run compile-web",
     "compile-native": "tsc -p src/native --outDir lib -d",
-    "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs",
+    "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs && node update-native-bundle.js",
     "compile-web": "tsc -p src/web --outDir lib -d",
     "rollup-web": "rollup -c rollup.config.web.js && babel lib/web.bundle.js --out-file lib/web.bundle.js",
     "preversion": "npm test",
