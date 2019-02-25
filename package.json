@@ -51,8 +51,8 @@
   },
   "devDependencies": {
     "@babel/cli": "7.2.3",
-    "@babel/core": "7.3.3",
-    "@babel/preset-env": "7.3.1",
+    "@babel/core": "7.3.4",
+    "@babel/preset-env": "7.3.4",
     "comlinkjs": "3.2.0",
     "cpr": "3.0.1",
     "del-cli": "1.1.0",
