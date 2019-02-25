@@ -10,7 +10,7 @@
     "react": "16.6.3",
     "react-native": "0.58.5",
     "react-native-webview": "^5.2.1",
-    "react-native-webview-comlink": "^0.1.0"
+    "react-native-webview-comlink": "*"
   },
   "devDependencies": {
     "metro-react-native-babel-preset": "^0.52.0"
