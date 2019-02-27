@@ -16,7 +16,7 @@
     "compile-native": "tsc -p src/native --outDir lib -d",
     "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs && node update-native-bundle.js",
     "compile-web": "tsc -p src/web --outDir lib -d",
-    "rollup-web": "rollup -c rollup.config.web.js && babel lib/web.bundle.js --out-file lib/web.bundle.js",
+    "rollup-web": "rollup -c rollup.config.web.js",
     "preversion": "npm test",
     "postversion": "git push origin master && git push origin --tags && npm publish",
     "test": "npm run build && jest"
@@ -50,9 +50,6 @@
     "wait-ready": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.2.3",
-    "@babel/core": "7.3.4",
-    "@babel/preset-env": "7.3.4",
     "comlinkjs": "3.2.0",
     "cpr": "3.0.1",
     "del-cli": "1.1.0",
