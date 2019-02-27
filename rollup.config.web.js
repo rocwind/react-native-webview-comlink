@@ -5,7 +5,7 @@ export default {
   output: {
     file: 'lib/web.bundle.js',
     format: 'umd',
-    name: 'RNWebviewComlink',
+    name: 'RNWebViewComlink',
   },
   plugins: [
     resolve({
