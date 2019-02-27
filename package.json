@@ -2,9 +2,9 @@
   "name": "react-native-webview-comlink",
   "version": "0.2.2",
   "description": "",
-  "main": "lib/native.bundle.js",
-  "module": "lib/native.js",
-  "types": "lib/native.d.ts",
+  "main": "lib/web.bundle.js",
+  "react-native": "lib/native.js",
+  "module": "lib/web.js",
   "files": [
     "lib/"
   ],

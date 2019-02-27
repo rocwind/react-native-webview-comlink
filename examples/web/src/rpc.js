@@ -1,4 +1,4 @@
-import { createEndpoint, waitEndpointReady } from 'react-native-webview-comlink/lib/web';
+import { createEndpoint, waitEndpointReady } from 'react-native-webview-comlink';
 import { proxy, proxyValue } from 'comlinkjs';
 
 export const rpcReady = waitEndpointReady;
