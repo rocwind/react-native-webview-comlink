@@ -14,6 +14,7 @@
 
 ### Web
 * `createEndpoint()`
+* `getEndpointStatus()`
 * `waitEndpointReady()`
 
 ## Polyfills

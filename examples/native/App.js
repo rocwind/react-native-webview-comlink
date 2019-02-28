@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { withComlinkExpose } from 'react-native-webview-comlink';
 
@@ -19,7 +19,7 @@ export default class App extends React.Component {
       },
     };
 
-    this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true })(WebView);
+  this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true, debug: true })(WebView);
 
     this.ref = React.createRef();
   }
@@ -29,12 +29,14 @@ export default class App extends React.Component {
     // localhost works for ios simulator, for other case please use host address
     // const uri = 'http://<you host ip address>:3000';
     return (
-      <this.WebViewComponent
-        style={styles.container}
-        source={{ uri }}
-        ref={this.ref}
-        >
-      </this.WebViewComponent>
+      <SafeAreaView style={styles.container}>
+        <this.WebViewComponent
+          style={styles.container}
+          source={{ uri }}
+          ref={this.ref}
+          >
+        </this.WebViewComponent>
+      </SafeAreaView>
     );
   }
 }
@@ -42,8 +44,5 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

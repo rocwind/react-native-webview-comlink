@@ -1,18 +1,25 @@
 import { StringMessageChannel } from 'comlinkjs/messagechanneladapter';
 import { WebView, WebViewMessageEvent } from './webview';
+import { Logger } from './logger';
+
+export interface isEnabledGetter {
+    (): boolean,
+}
 
 export default class WebViewMessageChannel implements StringMessageChannel {
     private webview: WebView;
     private listeners: EventListenerOrEventListenerObject[] = [];
 
-    constructor(private debug: boolean) {
+    constructor(private isEnabled: isEnabledGetter, private logger: Logger) {
 
     }
 
+
     send(data: string) {
-        if (this.debug) {
-            console.log(`[WebViewComlink] sending message to webview:`);
-            console.log(data);
+        this.logger(`sending message to webview: ${data}`);
+        if (!this.isEnabled()) {
+            this.logger('MessageChannel is disabled, skip sending message');
+            return;
         }
         this.webview.postMessage(data);
     }
@@ -41,9 +48,10 @@ export default class WebViewMessageChannel implements StringMessageChannel {
     }
 
     onMessage(event: WebViewMessageEvent) {
-        if (this.debug) {
-            console.log(`[WebViewComlink] received message from webview:`);
-            console.log(JSON.stringify(event.nativeEvent.data));
+        this.logger(`received message from webview: ${JSON.stringify(event.nativeEvent.data)}`);
+        if (!this.isEnabled()) {
+            this.logger('MessageChannel is disabled, drop received message');
+            return;
         }
 
         this.listeners.forEach((listener) => {

@@ -6,7 +6,14 @@ import { Endpoint } from 'comlinkjs';
 import { wrap } from 'comlinkjs/messagechanneladapter';
 import { beginWait } from 'wait-ready';
 
-const { wait, setReady, setFailed } = beginWait();
+const { wait, getStatus, setReady, setFailed } = beginWait();
+/**
+ * check if Comlink endpoint is ready for sending & received message
+ */
+export const getEndpointStatus = getStatus;
+/**
+ * wait for endpont ready, returns a promise that resolve or reject on endpoint ready/failed
+ */
 export const waitEndpointReady = wait;
 
 const ENDPOINT_CHECK_INTERVAL: number = 200;
@@ -31,6 +38,9 @@ function checkEndpointReady() {
 
 checkEndpointReady();
 
+/**
+ * create a Comlink endpoint
+ */
 export function createEndpoint(): Endpoint {
     return wrap({
         send(data) {
