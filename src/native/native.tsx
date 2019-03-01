@@ -105,8 +105,8 @@ export function withComlinkExpose<Props extends WebViewProps>(rootObj: Exposable
 
             onNavigationStateChange = (event: WebViewNavigation) => {
                 const { url } = event;
-                if (whitelistUrls) {
-                    // check if the url in whitelist
+                if (whitelistUrls && url && url.startsWith('http')) {
+                    // check if the url in whitelist, skip js bridge urls like `react-js-navigation://xxx`
                     this.isCurrentUrlInWhitelist = !!whitelistUrls.find(reg => reg.test(url));
                     logger(`${url} is in whitelist: ${this.isCurrentUrlInWhitelist}`);
                 }
