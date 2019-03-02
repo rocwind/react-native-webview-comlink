@@ -55,7 +55,7 @@
     "del-cli": "1.1.0",
     "jest": "24.1.0",
     "react": "16.6.3",
-    "react-native": "0.58.5",
+    "react-native": "0.58.6",
     "rollup": "1.4.0",
     "rollup-plugin-node-resolve": "4.0.1",
     "typescript": "3.3.3333"
