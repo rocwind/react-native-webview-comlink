@@ -11,5 +11,5 @@ trim_trailing_whitespace = true
 [*.json]
 indent_size = 2
 
-[{jest.config.js,.travis.yml,rollup.config.*.js,.babelrc}]
+[{jest.config.js,.travis.yml,rollup.config.*.js,.babelrc,babel.config.js}]
 indent_size = 2
