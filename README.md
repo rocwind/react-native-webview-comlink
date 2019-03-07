@@ -1,7 +1,9 @@
 # react-native-webview-comlink [![Build Status](https://travis-ci.org/rocwind/react-native-webview-comlink.svg?branch=master)](https://travis-ci.org/rocwind/react-native-webview-comlink)
 
+`react-native-webview-comlink`'s goal is to integrate the Comlink with React Native WebView component, allow the js in web browser calls native API.
+
 ## Install
-* Install the package and `comlink`: `npm i --save react-native-webview-comlink comlinkjs`
+* Install the package and `Comlink`: `npm i --save react-native-webview-comlink comlinkjs`
 * Eject expo project: if React Native project is created by `expo-cli`, it needs to be ejected by `npm run eject`
 * For Android: Since comlink needs ES6 features to work, it is recommended to use up-to-date JavaScriptCore for Android build, check out [JSC build scripts](https://github.com/react-native-community/jsc-android-buildscripts) for more details about how to integrate jsc to React Native project
 
@@ -34,7 +36,7 @@ proxyObj.someMethod();
 ```
 
 ## Examples
-There are example [React Native project][examples/native] and [Web project(React)][examples/web] in [examples directory][examples]
+There are example [React Native project](examples/native) and [Web project(React)](examples/web) in [examples directory](examples)
 
 ## API
 ### Native
