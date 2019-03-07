@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
+// import { WebView } from 'react-native'; // the built-in WebView is also supported
 import { withComlinkExpose } from 'react-native-webview-comlink';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
 
+    // the root obj to be exposed to web
     const rootObj = {
       alert: (title, message, onYes, onNo) => {
         Alert.alert(title, message, [{
@@ -19,7 +21,8 @@ export default class App extends React.Component {
       },
     };
 
-  this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true, debug: true })(WebView);
+    // create higher-order WebView component
+    this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true, debug: true })(WebView);
 
     this.ref = React.createRef();
   }

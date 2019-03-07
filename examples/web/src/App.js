@@ -14,6 +14,7 @@ class App extends Component {
       userSelected: 'not started',
     };
 
+    // detect rpc ready status
     rpcReady().then(() => {
       this.setState({ rpcStatus: 'ready' });
     }).catch(() => {
