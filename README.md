@@ -1,6 +1,6 @@
 # react-native-webview-comlink [![Build Status](https://travis-ci.org/rocwind/react-native-webview-comlink.svg?branch=master)](https://travis-ci.org/rocwind/react-native-webview-comlink)
 
-`react-native-webview-comlink`'s goal is to integrate the Comlink with React Native WebView component, allow the js in web browser calls native API.
+`react-native-webview-comlink`'s goal is to integrate the [Comlink](https://github.com/GoogleChromeLabs/comlink) with React Native WebView component, allow the js in web browser calls native API.
 
 ## Install
 * Install the package and `Comlink`: `npm i --save react-native-webview-comlink comlinkjs`
