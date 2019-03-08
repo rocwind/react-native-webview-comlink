@@ -1,3 +1,5 @@
+// proxy-polyfill is needed to support iOS 9 and below
+import 'proxy-polyfill';
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
