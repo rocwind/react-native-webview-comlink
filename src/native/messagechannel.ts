@@ -21,6 +21,10 @@ export default class WebViewMessageChannel implements StringMessageChannel {
             this.logger('MessageChannel is disabled, skip sending message');
             return;
         }
+        if (!this.webview) {
+            this.logger('WebView is missing, skip sending message');
+            return;
+        }
         this.webview.postMessage(data);
     }
 
