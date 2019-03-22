@@ -57,7 +57,7 @@
     "metro-react-native-babel-preset": "0.53.1",
     "react": "16.6.3",
     "react-native": "0.58.6",
-    "react-test-renderer": "16.8.4",
+    "react-test-renderer": "16.8.5",
     "rollup": "1.7.0",
     "rollup-plugin-node-resolve": "4.0.1",
     "typescript": "3.3.4000"
