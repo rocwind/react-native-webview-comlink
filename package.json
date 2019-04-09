@@ -60,6 +60,6 @@
     "react-test-renderer": "16.8.6",
     "rollup": "1.9.0",
     "rollup-plugin-node-resolve": "4.2.1",
-    "typescript": "3.4.2"
+    "typescript": "3.4.3"
   }
 }
