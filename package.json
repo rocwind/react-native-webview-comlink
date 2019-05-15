@@ -58,7 +58,7 @@
     "react": "16.6.3",
     "react-native": "0.59.8",
     "react-test-renderer": "16.8.6",
-    "rollup": "1.11.3",
+    "rollup": "1.12.0",
     "rollup-plugin-node-resolve": "4.2.4",
     "typescript": "3.4.5"
   }
