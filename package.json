@@ -43,13 +43,13 @@
     "react-native": "*"
   },
   "dependencies": {
-    "@types/react": "^16.8.4",
-    "@types/react-native": "^0.57.37",
     "hoist-non-react-statics": "^3.3.0",
     "message-port-polyfill": "^0.2.0",
     "wait-ready": "^0.3.0"
   },
   "devDependencies": {
+    "@types/react": "^16.8.4",
+    "@types/react-native": "^0.57.37",
     "comlinkjs": "3.2.0",
     "cpr": "3.0.1",
     "del-cli": "2.0.0",
