@@ -5,10 +5,8 @@
   "main": "lib/web.bundle.js",
   "react-native": "lib/native.js",
   "module": "lib/web.js",
-  "types": "index.d.ts",
   "files": [
-    "lib/",
-    "index.d.ts"
+    "lib/"
   ],
   "scripts": {
     "clean": "del-cli lib && del-cli examples/web/node_modules/react-native-webview-comlink/lib && del-cli examples/native/node_modules/react-native-webview-comlink/lib",
