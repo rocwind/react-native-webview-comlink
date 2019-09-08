@@ -52,7 +52,7 @@
     "@types/react-native": "0.60.12",
     "comlinkjs": "3.2.0",
     "cpr": "3.0.1",
-    "del-cli": "2.0.0",
+    "del-cli": "3.0.0",
     "jest": "24.9.0",
     "metro-react-native-babel-preset": "0.56.0",
     "react": "16.6.3",
