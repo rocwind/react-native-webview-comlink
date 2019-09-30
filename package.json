@@ -48,7 +48,7 @@
     "wait-ready": "^0.3.0"
   },
   "devDependencies": {
-    "@types/react": "16.9.3",
+    "@types/react": "16.9.4",
     "@types/react-native": "0.60.17",
     "comlinkjs": "3.2.0",
     "cpr": "3.0.1",
