@@ -54,7 +54,7 @@
     "cpr": "3.0.1",
     "del-cli": "3.0.0",
     "jest": "24.9.0",
-    "metro-react-native-babel-preset": "0.56.3",
+    "metro-react-native-babel-preset": "0.57.0",
     "react": "16.6.3",
     "react-native": "0.59.9",
     "react-test-renderer": "16.8.6",
