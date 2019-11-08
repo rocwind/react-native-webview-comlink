@@ -14,7 +14,6 @@
     "postbuild": "cpr lib examples/web/node_modules/react-native-webview-comlink/lib && cpr lib examples/native/node_modules/react-native-webview-comlink/lib",
     "compile": "npm run compile-native && npm run compile-web",
     "compile-native": "tsc -p src/native --outDir lib -d",
-    "rollup-native": "rollup lib/native.js --file lib/native.bundle.js --format cjs && node update-native-bundle.js",
     "compile-web": "tsc -p src/web --outDir lib -d",
     "rollup-web": "rollup -c rollup.config.web.js",
     "preversion": "npm test",
@@ -38,9 +37,10 @@
   },
   "homepage": "https://github.com/rocwind/react-native-webview-comlink#readme",
   "peerDependencies": {
-    "comlinkjs": ">=3.2.0",
-    "react": ">=16.3.0",
-    "react-native": "*"
+    "comlinkjs": ">= 3.2.0",
+    "react": ">= 16.3.0",
+    "react-native": "*",
+    "react-native-webview": ">= 5.0.1"
   },
   "dependencies": {
     "hoist-non-react-statics": "^3.3.0",
@@ -57,6 +57,7 @@
     "metro-react-native-babel-preset": "0.57.0",
     "react": "16.6.3",
     "react-native": "0.59.9",
+    "react-native-webview": "^7.4.3",
     "react-test-renderer": "16.8.6",
     "rollup": "1.26.3",
     "rollup-plugin-node-resolve": "5.2.0",

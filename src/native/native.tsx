@@ -5,8 +5,12 @@ import { ComponentType, Component, forwardRef } from 'react';
 import { Exposable, expose } from 'comlinkjs';
 import { wrap } from 'comlinkjs/messagechanneladapter';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import './webview';
-import { WebViewProps, WebView, WebViewMessageEvent, WebViewNavigation } from './webview';
+import {
+    WebView,
+    WebViewProps,
+    WebViewMessageEvent,
+    WebViewNavigation,
+} from 'react-native-webview';
 import WebViewMessageChannel, { isEnabledGetter } from './messagechannel';
 import { Logger, createLogger } from './logger';
 
