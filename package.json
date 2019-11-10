@@ -55,7 +55,7 @@
     "del-cli": "3.0.0",
     "jest": "24.9.0",
     "metro-react-native-babel-preset": "0.57.0",
-    "react": "16.6.3",
+    "react": "16.11.0",
     "react-native": "0.61.4",
     "react-native-webview": "7.4.3",
     "react-test-renderer": "16.11.0",

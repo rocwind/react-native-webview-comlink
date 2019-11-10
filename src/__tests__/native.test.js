@@ -1,5 +1,5 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import TestRenderer from 'react-test-renderer';
 
 import { withComlinkExpose } from '../../lib/native';
 
@@ -13,6 +13,6 @@ class WebView extends React.Component {
 
 it('withComlinkExpose HOC renders correctly', () => {
     const ComlinkExposed = withComlinkExpose({})(WebView);
-    const tree = renderer.create(<ComlinkExposed />).toJSON();
+    const tree = TestRenderer.create(<ComlinkExposed />).toJSON();
     expect(tree).toMatchSnapshot();
 });
