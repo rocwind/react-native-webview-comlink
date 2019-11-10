@@ -12,6 +12,7 @@ import {
     WebViewNavigation,
 } from 'react-native-webview';
 import WebViewMessageChannel, { isEnabledGetter } from './messagechannel';
+import createExposableProxy from './proxy';
 import { Logger, createLogger } from './logger';
 
 interface HigherOrderComponentCreator<Props> {
@@ -73,7 +74,7 @@ export function withComlinkExpose<Props extends WebViewProps>(rootObj: Exposable
 
                 // connect and expose the rootObj
                 this.messageChannel = new WebViewMessageChannel(this.isEnabled, logger);
-                expose(rootObj, wrap(this.messageChannel));
+                expose(createExposableProxy(rootObj), wrap(this.messageChannel));
             }
 
             isEnabled = (): boolean => {

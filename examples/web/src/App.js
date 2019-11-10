@@ -25,9 +25,6 @@ class App extends Component {
   handleClick = () => {
     rpc.alert('Web', 'Called by web page, please select', this.onUserSelectedYes, this.onUserSelectedNo);
   }
-  handleError = () => {
-    rpc.someMethodWithError().catch(err => alert(JSON.stringify(err)));
-  }
 
   onUserSelectedYes = () => {
       this.setState({ userSelected: 'YES' });
@@ -52,12 +49,25 @@ class App extends Component {
           >
             Call Native Alert
           </a>
+          <br />
           <a
             className="App-link"
             href="#"
-            onClick={this.handleError}
+            onClick={() => {
+              rpc.someMethodWithError().catch(err => alert(JSON.stringify(err)));
+            }}
           >
             Call Native With Error
+          </a>
+          <br />
+          <a
+            className="App-link"
+            href="#"
+            onClick={() => {
+              rpc.someMethodThatNotExists().catch(err => alert(JSON.stringify(err)));
+            }}
+          >
+            Call Native Not Provided Method
           </a>
         </header>
       </div>

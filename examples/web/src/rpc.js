@@ -8,6 +8,7 @@ export const rpcReady = waitEndpointReady;
 const target = {
   alert: () => {},
   someMethodWithError: () => {},
+  someMethodThatNotExists: () => {},
 };
 
 // create a comlink proxy for the rpc call
