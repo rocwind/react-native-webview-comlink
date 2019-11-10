@@ -9,10 +9,16 @@ const promisify = (rpcMethod: (...args: any[]) => any) => (...args: any[]) => Pr
     .then(() => rpcMethod(...args))
     .catch((err) => {
         if (err instanceof Error) {
-            throw Object.assign({}, err, {
-                message: err.message,
-                name: err.name,
-            });
+            const { message,
+                // read-only properties, may cause error on iOS9 webview
+                name, stack,
+                line, column, sourceURL,
+                ...rest
+            } = err as any;
+            throw {
+                message,
+                ...rest,
+            };
         }
         throw err;
     });
