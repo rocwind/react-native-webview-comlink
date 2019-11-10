@@ -25,6 +25,9 @@ class App extends Component {
   handleClick = () => {
     rpc.alert('Web', 'Called by web page, please select', this.onUserSelectedYes, this.onUserSelectedNo);
   }
+  handleError = () => {
+    rpc.someMethodWithError().catch(err => alert(JSON.stringify(err)));
+  }
 
   onUserSelectedYes = () => {
       this.setState({ userSelected: 'YES' });
@@ -47,7 +50,14 @@ class App extends Component {
             href="#"
             onClick={this.handleClick}
           >
-            Call Native
+            Call Native Alert
+          </a>
+          <a
+            className="App-link"
+            href="#"
+            onClick={this.handleError}
+          >
+            Call Native With Error
           </a>
         </header>
       </div>

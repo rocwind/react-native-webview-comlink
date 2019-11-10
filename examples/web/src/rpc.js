@@ -6,7 +6,8 @@ export const rpcReady = waitEndpointReady;
 // pre-define the rpc target
 // it's a limitation of the proxy-polyfill that properties to proxy must be known at creation time: https://github.com/GoogleChrome/proxy-polyfill;
 const target = {
-  alert() {}
+  alert: () => {},
+  someMethodWithError: () => {},
 };
 
 // create a comlink proxy for the rpc call

@@ -21,6 +21,7 @@ export default class App extends React.Component {
           onPress: onNo,
         }]);
       },
+      someMethodWithError: () => Promise.reject(new Error('something wrong')),
     };
 
     // create higher-order WebView component
