@@ -21,9 +21,7 @@ const ENDPOINT_CHECK_TIMEOUT: number = 10000;
 const startTimestamp: number = Date.now();
 function checkEndpointReady() {
     // react-native-webview will add window.ReactNativeWebView
-    // react-native built-in webview will save original window.postMessage to window.originalPostMessage
-    // when either of them exists, means the endpoint is ready
-    if ((<any>window).ReactNativeWebView || (<any>window).originalPostMessage) {
+    if ((<any>window).ReactNativeWebView) {
         setReady();
         return;
     }
@@ -46,13 +44,7 @@ export function createEndpoint(): Endpoint {
         send(data) {
             // make sure the message delivered to native
             waitEndpointReady().then(() => {
-                if ((<any>window).ReactNativeWebView) {
-                    // react-native-webview
-                    (<any>window).ReactNativeWebView.postMessage(data);
-                } else {
-                    // lagacy react-native built-in webview
-                    window.postMessage(data, '*');
-                }
+                (<any>window).ReactNativeWebView.postMessage(data);
             });
         },
         addEventListener(type, listener) {
@@ -61,15 +53,12 @@ export function createEndpoint(): Endpoint {
             }
             // react-native-webview
             window.addEventListener(type, listener);
-            // lagacy react-native built-in webview
-            document.addEventListener(type, listener);
         },
         removeEventListener(type, listener) {
             if (type !== 'message') {
                 throw Error(`unsupported event type: ${type}`);
             }
             window.addEventListener(type, listener);
-            document.removeEventListener(type, listener);
         },
         dispatchEvent(event) {
             return window.dispatchEvent(event);

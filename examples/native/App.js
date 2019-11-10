@@ -3,7 +3,6 @@ import 'proxy-polyfill';
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
-// import { WebView } from 'react-native'; // the built-in WebView is also supported
 import { withComlinkExpose } from 'react-native-webview-comlink';
 
 export default class App extends React.Component {
