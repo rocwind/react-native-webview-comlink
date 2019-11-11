@@ -1,11 +1,12 @@
 import { Exposable } from 'comlinkjs';
 
-const createNotExistsPropErrorHandler = (prop: string | number | symbol) => () => Promise.reject({
+type PropType = string | number | symbol;
+
+const createNotExistsPropErrorHandler = (prop: PropType) => () => Promise.reject({
     message: `prop: ${String(prop)} is not exsits`,
 });
 
-
-const promisify = (rpcMethod: (...args: any[]) => any) => (...args: any[]) => Promise.resolve()
+const promisify = (rpcMethod: Function) => (...args: any[]) => Promise.resolve()
     .then(() => rpcMethod(...args))
     .catch((err) => {
         if (err instanceof Error) {
@@ -23,16 +24,31 @@ const promisify = (rpcMethod: (...args: any[]) => any) => (...args: any[]) => Pr
         throw err;
     });
 
+const RESERVED_PROPS: PropType[] = [
+    'then', // used in promise.resolve()@es6-extensions
+];
 
-
-const createExposableProxy = (target: Exposable): Exposable => new Proxy(target, {
-    get: (target, prop) => {
-        if (prop in target) {
-            return promisify(target[prop]);
-        }
-        return createNotExistsPropErrorHandler(prop);
+const createExposableProxy = (target: Exposable): Exposable => {
+    if (typeof target === 'function') {
+        return promisify(target);
     }
-});
-
+    return new Proxy(target, {
+        get: (target, prop) => {
+            if (prop in target) {
+                // prop exists
+                const source = target[prop];
+                if (typeof source === 'function') {
+                    return promisify(source);
+                }
+                return source;
+            }
+            // prop not exists
+            if (RESERVED_PROPS.includes(prop)) {
+                return undefined;
+            }
+            return createNotExistsPropErrorHandler(prop);
+        }
+    });
+};
 
 export default createExposableProxy;
