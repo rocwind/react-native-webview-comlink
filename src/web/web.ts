@@ -51,17 +51,23 @@ export function createEndpoint(): Endpoint {
             if (type !== 'message') {
                 throw Error(`unsupported event type: ${type}`);
             }
-            // react-native-webview
+            // android
+            document.addEventListener(type, listener);
+            // ios
             window.addEventListener(type, listener);
         },
         removeEventListener(type, listener) {
             if (type !== 'message') {
                 throw Error(`unsupported event type: ${type}`);
             }
+            // android
+            document.removeEventListener(type, listener);
+            // ios
             window.addEventListener(type, listener);
         },
         dispatchEvent(event) {
-            return window.dispatchEvent(event);
+            window.dispatchEvent(event);
+            return document.dispatchEvent(event);
         }
     });
 }
