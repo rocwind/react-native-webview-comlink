@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/react": "16.9.23",
-    "@types/react-native": "0.61.21",
+    "@types/react-native": "0.61.22",
     "comlinkjs": "3.2.0",
     "cpr": "3.0.1",
     "del-cli": "3.0.0",
