@@ -57,7 +57,7 @@
     "metro-react-native-babel-preset": "0.58.0",
     "react": "16.11.0",
     "react-native": "0.61.5",
-    "react-native-webview": "8.2.0",
+    "react-native-webview": "8.2.1",
     "react-test-renderer": "16.13.0",
     "rollup": "2.0.6",
     "rollup-plugin-node-resolve": "5.2.0",
