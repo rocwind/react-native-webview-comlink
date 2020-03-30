@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		D04AB30AA5EFA703C7444A64 /* libPods-RNWebViewComlink.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7BDE62856485ED95679C58 /* libPods-RNWebViewComlink.a */; };
 		D8E52D372221339000085C25 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8E52D092221339000085C25 /* JavaScriptCore.framework */; };
+		D8FF48422431E323005EBC4C /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FF48412431E323005EBC4C /* Dummy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,8 @@
 		3B7BDE62856485ED95679C58 /* libPods-RNWebViewComlink.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNWebViewComlink.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68EA62E7F364C14258F38863 /* Pods-RNWebViewComlink.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNWebViewComlink.debug.xcconfig"; path = "Target Support Files/Pods-RNWebViewComlink/Pods-RNWebViewComlink.debug.xcconfig"; sourceTree = "<group>"; };
 		D8E52D092221339000085C25 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		D8FF48402431E323005EBC4C /* RNWebViewComlink-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNWebViewComlink-Bridging-Header.h"; sourceTree = "<group>"; };
+		D8FF48412431E323005EBC4C /* Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Dummy.swift; path = RNWebViewComlink/Dummy.swift; sourceTree = "<group>"; };
 		ECF9D54EE9B82875ABBB84F5 /* Pods-RNWebViewComlink.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNWebViewComlink.release.xcconfig"; path = "Target Support Files/Pods-RNWebViewComlink/Pods-RNWebViewComlink.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -53,6 +56,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				D8FF48412431E323005EBC4C /* Dummy.swift */,
+				D8FF48402431E323005EBC4C /* RNWebViewComlink-Bridging-Header.h */,
 			);
 			name = RNWebViewComlink;
 			sourceTree = "<group>";
@@ -72,7 +77,6 @@
 				68EA62E7F364C14258F38863 /* Pods-RNWebViewComlink.debug.xcconfig */,
 				ECF9D54EE9B82875ABBB84F5 /* Pods-RNWebViewComlink.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -145,7 +149,8 @@
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = RP8J3EA4S7;
+						DevelopmentTeam = 93BA8L388B;
+						LastSwiftMigration = 1140;
 					};
 				};
 			};
@@ -225,6 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				D8FF48422431E323005EBC4C /* Dummy.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -249,9 +255,11 @@
 			baseConfigurationReference = 68EA62E7F364C14258F38863 /* Pods-RNWebViewComlink.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = RP8J3EA4S7;
+				DEVELOPMENT_TEAM = 93BA8L388B;
+				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
@@ -262,13 +270,20 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/RNWebViewComlink\"",
 				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.RNWebViewComlink;
 				PRODUCT_NAME = RNWebViewComlink;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNWebViewComlink-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -278,8 +293,10 @@
 			baseConfigurationReference = ECF9D54EE9B82875ABBB84F5 /* Pods-RNWebViewComlink.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RP8J3EA4S7;
+				DEVELOPMENT_TEAM = 93BA8L388B;
+				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
@@ -290,13 +307,19 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/RNWebViewComlink\"",
 				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.RNWebViewComlink;
 				PRODUCT_NAME = RNWebViewComlink;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNWebViewComlink-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
