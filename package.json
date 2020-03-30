@@ -16,8 +16,7 @@
     "compile-native": "tsc -p src/native --outDir lib -d",
     "compile-web": "tsc -p src/web --outDir lib -d",
     "rollup-web": "rollup -c rollup.config.web.js",
-    "preversion": "npm test",
-    "postversion": "git push origin master && git push origin --tags && npm publish",
+    "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
     "test": "npm run build && jest"
   },
   "repository": {
@@ -61,6 +60,7 @@
     "react-test-renderer": "16.13.1",
     "rollup": "2.3.0",
     "rollup-plugin-node-resolve": "5.2.0",
+    "standard-version": "^7.1.0",
     "typescript": "3.8.3"
   }
 }
