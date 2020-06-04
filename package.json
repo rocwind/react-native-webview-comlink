@@ -58,6 +58,6 @@
     "rollup": "2.13.1",
     "rollup-plugin-node-resolve": "5.2.0",
     "standard-version": "8.0.0",
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   }
 }
