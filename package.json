@@ -55,7 +55,7 @@
     "react-native": "0.62.2",
     "react-native-webview": "10.2.3",
     "react-test-renderer": "16.13.1",
-    "rollup": "2.14.0",
+    "rollup": "2.15.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "standard-version": "8.0.0",
     "typescript": "3.9.5"
