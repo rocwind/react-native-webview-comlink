@@ -12,19 +12,22 @@ export default class App extends React.Component {
     // the root obj to be exposed to web
     const rootObj = {
       alert: (title, message, onYes, onNo) => {
-        Alert.alert(title, message, [{
-          text: 'YES',
-          onPress: onYes,
-        }, {
-          text: 'NO',
-          onPress: onNo,
-        }]);
+        Alert.alert(title, message, [
+          {
+            text: 'YES',
+            onPress: onYes,
+          },
+          {
+            text: 'NO',
+            onPress: onNo,
+          },
+        ]);
       },
       someMethodWithError: () => Promise.reject(new Error('something wrong')),
     };
 
     // create higher-order WebView component
-    this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true, debug: true })(WebView);
+    this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true, log: true })(WebView);
 
     this.ref = React.createRef();
   }
@@ -39,8 +42,7 @@ export default class App extends React.Component {
           style={styles.container}
           source={{ uri }}
           ref={this.ref}
-          >
-        </this.WebViewComponent>
+        ></this.WebViewComponent>
       </SafeAreaView>
     );
   }

@@ -9,9 +9,9 @@
     "jsc-android": "^241213.1.0",
     "proxy-polyfill": "^0.3.1",
     "react": "^16.11.0",
-    "react-native": "^0.62.0",
-    "react-native-webview": "^9.0.2",
-    "react-native-webview-comlink": "*"
+    "react-native": "^0.62.2",
+    "react-native-webview": "^10.3.1",
+    "react-native-webview-comlink": "^0.5.1"
   },
   "devDependencies": {
     "metro-react-native-babel-preset": "^0.59.0"
