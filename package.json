@@ -2,19 +2,17 @@
   "name": "react-native-webview-comlink",
   "version": "0.5.1",
   "description": "",
-  "main": "lib/web.bundle.js",
-  "react-native": "lib/native.js",
-  "module": "lib/web.js",
+  "main": "lib/web/web.bundle.js",
+  "react-native": "lib/native/native.js",
+  "module": "lib/web/web.js",
   "files": [
     "lib/"
   ],
   "scripts": {
     "clean": "rm -rf lib && rm -rf examples/web/node_modules/react-native-webview-comlink/lib && rm -rf examples/native/node_modules/react-native-webview-comlink/lib",
     "build": "npm run clean && npm run compile && npm run rollup-web",
-    "postbuild": "cp -r lib examples/web/node_modules/react-native-webview-comlink/lib && cp -r lib examples/native/node_modules/react-native-webview-comlink/lib",
-    "compile": "npm run compile-native && npm run compile-web",
-    "compile-native": "tsc -p src/native --outDir lib -d",
-    "compile-web": "tsc -p src/web --outDir lib -d",
+    "postbuild": "cp -r lib examples/web/node_modules/react-native-webview-comlink/lib && cp package.json examples/web/node_modules/react-native-webview-comlink/package.json && cp -r lib examples/native/node_modules/react-native-webview-comlink/lib && cp package.json examples/native/node_modules/react-native-webview-comlink/package.json",
+    "compile": "tsc -d",
     "rollup-web": "rollup -c rollup.config.web.js",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
     "test": "npm run build && jest"

@@ -1,9 +1,9 @@
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  input: 'lib/web.js',
+  input: 'lib/web/web.js',
   output: {
-    file: 'lib/web.bundle.js',
+    file: 'lib/web/web.bundle.js',
     format: 'umd',
     name: 'RNWebViewComlink',
   },
@@ -13,10 +13,10 @@ export default {
       // specifies alternative files to load for people bundling
       // for the browser. If that's you, use this option, otherwise
       // pkg.browser will be ignored
-      browser: true,  // Default: false
+      browser: true, // Default: false
 
       // not all files you want to resolve are .js files
-      extensions: [ '.mjs', '.js', '.jsx', '.json' ],  // Default: [ '.mjs', '.js', '.json', '.node' ]
+      extensions: ['.mjs', '.js', '.jsx', '.json'], // Default: [ '.mjs', '.js', '.json', '.node' ]
     }),
-  ]
+  ],
 };

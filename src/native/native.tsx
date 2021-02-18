@@ -3,7 +3,7 @@ import './polyfill';
 import * as React from 'react';
 import { ComponentType, Component, forwardRef } from 'react';
 import { Exposable, expose } from 'comlinkjs';
-import { wrap } from 'comlinkjs/messagechanneladapter';
+import { wrap } from '../common/messagechanneladapter';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import {
     WebView,

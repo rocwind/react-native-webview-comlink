@@ -1,18 +1,16 @@
-import { StringMessageChannel } from 'comlinkjs/messagechanneladapter';
+import { StringMessageChannel } from '../common/messagechanneladapter';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { Logger } from './logger';
 
 export interface isEnabledGetter {
-    (): boolean,
+    (): boolean;
 }
 
 export default class WebViewMessageChannel implements StringMessageChannel {
     private webview: WebView;
     private listeners: EventListenerOrEventListenerObject[] = [];
 
-    constructor(private isEnabled: isEnabledGetter, private logger: Logger) {
-
-    }
+    constructor(private isEnabled: isEnabledGetter, private logger: Logger) {}
 
     send(data: string) {
         this.logger(`sending message to webview: ${data}`);

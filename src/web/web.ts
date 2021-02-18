@@ -3,10 +3,10 @@ import { applyPolyfill } from 'message-port-polyfill';
 applyPolyfill(); // need to force applyPolyfill for ios issue
 
 import { Endpoint } from 'comlinkjs';
-import { wrap } from 'comlinkjs/messagechanneladapter';
+import { wrap } from '../common/messagechanneladapter';
 import { wait } from 'wait-ready';
 
-const { afterReady: waitEndpointReady, getStatus, setReady, setFailed } = wait<void>();
+const { afterReady, getStatus, setReady, setFailed } = wait<void>();
 
 /**
  * check if Comlink endpoint is ready for sending & received message
@@ -15,7 +15,7 @@ export const getEndpointStatus = getStatus;
 /**
  * wait for endpont ready, returns a promise that resolve or reject on endpoint ready/failed
  */
-export { waitEndpointReady };
+export const waitEndpointReady = afterReady;
 
 const ENDPOINT_CHECK_INTERVAL: number = 200;
 const ENDPOINT_CHECK_TIMEOUT: number = 10000;
@@ -44,7 +44,7 @@ export function createEndpoint(): Endpoint {
     return wrap({
         send(data) {
             // make sure the message delivered to native
-            waitEndpointReady().then(() => {
+            afterReady().then(() => {
                 (<any>window).ReactNativeWebView.postMessage(data);
             });
         },

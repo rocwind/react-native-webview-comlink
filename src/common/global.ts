@@ -1,7 +1,7 @@
 // since react-native global types conflicts with dom types
 // we need to exclude dom lib to compile, however, there are some types are
 // referenced by comlinkjs, to get it compile, add those types here
-interface Window { }
+interface Event {}
 
 interface EventListenerObject {
     handleEvent(evt: Event): void;
@@ -13,7 +13,21 @@ interface EventListener {
 
 declare type EventListenerOrEventListenerObject = EventListener | EventListenerObject;
 
-interface MessageEvent { }
+interface EventTarget {
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject): void;
+    dispatchEvent?(event: Event): void;
+}
+
+interface Window extends EventTarget {}
+declare var window: Window & typeof globalThis;
+
+interface Document extends EventTarget {}
+declare var document: Document;
+
+interface MessageEvent {
+    data: any;
+}
 
 interface MessagePort extends EventTarget {
     onmessage: ((this: MessagePort, ev: MessageEvent) => any) | null;
@@ -38,7 +52,21 @@ interface MessagePort extends EventTarget {
     removeEventListener(type: string, listener: EventListenerOrEventListenerObject): void;
 }
 
+declare var MessagePort: {
+    prototype: MessagePort;
+    new (): MessagePort;
+};
+
 interface MessageChannel {
     readonly port1: MessagePort;
     readonly port2: MessagePort;
 }
+
+declare var MessageChannel: {
+    prototype: MessageChannel;
+    new (): MessageChannel;
+};
+
+type Transferable = ArrayBuffer | MessagePort;
+
+declare function setTimeout(handler: () => void, timeout?: number, ...arguments: any[]): number;
