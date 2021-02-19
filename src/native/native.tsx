@@ -11,13 +11,11 @@ import {
     WebViewMessageEvent,
     WebViewNavigation,
 } from 'react-native-webview';
-import WebViewMessageChannel, { isEnabledGetter } from './messagechannel';
-import createExposableProxy from './proxy';
+import { WebViewMessageChannel, isEnabledGetter } from './messagechannel';
+import { createExposableProxy } from './proxy';
 import { Logger, createLogger } from './logger';
 
-interface HigherOrderComponentCreator<Props> {
-    (component: ComponentType<Props>): ComponentType<Props>;
-}
+type HigherOrderComponentCreator<Props> = (component: ComponentType<Props>) => ComponentType<Props>;
 
 /**
  * withComlinkExpose HOC config

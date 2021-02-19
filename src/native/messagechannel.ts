@@ -2,11 +2,8 @@ import { StringMessageChannel } from '../common/messagechanneladapter';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { Logger } from './logger';
 
-export interface isEnabledGetter {
-    (): boolean;
-}
-
-export default class WebViewMessageChannel implements StringMessageChannel {
+export type isEnabledGetter = () => boolean;
+export class WebViewMessageChannel implements StringMessageChannel {
     private webview: WebView;
     private listeners: EventListenerOrEventListenerObject[] = [];
 
