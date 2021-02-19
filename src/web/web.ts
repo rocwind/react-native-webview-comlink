@@ -2,18 +2,19 @@
 import { applyPolyfill } from 'message-port-polyfill';
 applyPolyfill(); // need to force applyPolyfill for ios issue
 
-import { Endpoint } from 'comlinkjs';
+import { Endpoint, proxy, ProxyResult } from 'comlinkjs';
 import { wrap } from '../common/messagechanneladapter';
 import { wait } from 'wait-ready';
 
 const { afterReady, getStatus, setReady, setFailed } = wait<void>();
 
+export { proxyValue } from 'comlinkjs';
 /**
  * check if Comlink endpoint is ready for sending & received message
  */
 export const getEndpointStatus = getStatus;
 /**
- * wait for endpont ready, returns a promise that resolve or reject on endpoint ready/failed
+ * wait for Comlink endpont ready, returns a promise that resolve or reject on endpoint ready/failed
  */
 export const waitEndpointReady = afterReady;
 
@@ -39,6 +40,7 @@ checkEndpointReady();
 
 /**
  * create a Comlink endpoint
+ * @deprecated please use createComlinkProxy() instead, createEndpoint() will be made private in future version
  */
 export function createEndpoint(): Endpoint {
     return wrap({
@@ -71,4 +73,12 @@ export function createEndpoint(): Endpoint {
             return document.dispatchEvent(event);
         },
     });
+}
+
+/**
+ * create Comlink proxy object
+ * @param target
+ */
+export function createComlinkProxy<T>(target?: T): ProxyResult<T> {
+    return proxy(createEndpoint(), target);
 }

@@ -1,5 +1,4 @@
-import { createEndpoint, waitEndpointReady } from 'react-native-webview-comlink';
-import { proxy, proxyValue } from 'comlinkjs';
+import { createComlinkProxy, waitEndpointReady, proxyValue } from 'react-native-webview-comlink';
 
 export const rpcReady = waitEndpointReady;
 
@@ -12,12 +11,12 @@ const target = {
 };
 
 // create a comlink proxy for the rpc call
-const targetProxy = proxy(createEndpoint(), target);
+const targetProxy = createComlinkProxy(target);
 
 // to make sure the callback functions go through proxy
 const rpc = Object.keys(target).reduce((obj, key) => {
   obj[key] = (...args) => {
-    const wrappedArgs = args.map(value => {
+    const wrappedArgs = args.map((value) => {
       // callback functions need to be wrapped by proxyValue() to work
       if (typeof value !== 'function') {
         return value;

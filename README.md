@@ -4,9 +4,9 @@
 
 ## Install
 
--   Install the package and `Comlink`: `npm i --save react-native-webview-comlink comlinkjs`
+-   Install the package: `npm i --save react-native-webview-comlink`
 -   Eject expo project: if React Native project is created by `expo-cli`, it needs to be ejected by `npm run eject`
--   For Android: Since comlink needs ES6 features to work, it is recommended to use up-to-date JavaScriptCore for Android build, check out [JSC build scripts](https://github.com/react-native-community/jsc-android-buildscripts) for more details about how to integrate jsc to React Native project
+-   For Android: Since comlink needs ES6 features to work, it is recommended to use [Hermes](https://reactnative.dev/docs/hermes) or [up-to-date JavaScriptCore](https://github.com/react-native-community/jsc-android-buildscripts) for Android build. However, proxy-polyfill is needed to work with Hermes currently, check out [this issue](https://github.com/facebook/hermes/issues/33) for updates
 
 ## Usage
 
@@ -30,10 +30,9 @@ const WebViewComponent = withComlinkExpose(rootObj)(WebView);
 ### Web
 
 ```
-import { createEndpoint } from 'react-native-webview-comlink';
-import { proxy } from 'comlinkjs';
+import { createComlinkProxy } from 'react-native-webview-comlink';
 
-const proxyObj = proxy(createEndpoint());
+const proxyObj = createComlinkProxy();
 // call native side method
 proxyObj.someMethod();
 ```
@@ -58,13 +57,19 @@ There are example [React Native project](examples/native) and [Web project(React
 
 ### Web
 
-#### `createEndpoint()`
+#### `createComlinkProxy(target)`
 
-> Returns an `endpoint` for `comlink` to use.
+> Returns a Comlink `proxy` of exposed `obj` from native to use.
+
+-   [`target`] _(Object)_: it's needed to work with proxy-polyfill. Since the proxy-polyfill requires proxy properties known at creation time.
+
+#### `proxyValue()`
+
+> To create a proxy to send for callbacks
 
 #### `getEndpointStatus()`
 
-> Returns current `endpoint` status in `ReadyStatusEnum` described below.
+> Returns current Comlink endpoint status in `ReadyStatusEnum` described below. It doesn't matter to create comlink proxy or invoke it's methods before Comlink ready.
 
 ```
 ReadyStatusEnum {
@@ -76,7 +81,7 @@ ReadyStatusEnum {
 
 #### `waitEndpointReady()`
 
-> Returns a `Promise` that resolves when `endpoint` is ready or rejects on timeout.
+> Returns a `Promise` that resolves when Comlink endpoint is ready or rejects on timeout.
 
 ## Polyfills
 
