@@ -5,13 +5,12 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
-    "comlinkjs": "^3.2.0",
     "jsc-android": "^241213.1.0",
     "proxy-polyfill": "^0.3.1",
     "react": "^16.11.0",
     "react-native": "^0.62.2",
     "react-native-webview": "^10.3.1",
-    "react-native-webview-comlink": "^0.5.1"
+    "react-native-webview-comlink": "^0.6.0"
   },
   "devDependencies": {
     "metro-react-native-babel-preset": "^0.59.0"

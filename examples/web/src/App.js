@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import React, { Component } from 'react';
+import { waitFor } from 'wait-ready';
 import logo from './logo.svg';
 import './App.css';
-import { rpc, rpcReady } from './rpc';
+
+export const rpcReady = waitFor(() => window.MyJSInterface, { checkInterval: 200, timeout: 3000 });
 
 class App extends Component {
   constructor(props) {
@@ -14,7 +16,7 @@ class App extends Component {
     };
 
     // detect rpc ready status
-    rpcReady()
+    rpcReady
       .then(() => {
         this.setState({ rpcStatus: 'ready' });
       })
@@ -24,7 +26,7 @@ class App extends Component {
   }
 
   handleClick = () => {
-    rpc.alert(
+    window.MyJSInterface.alert(
       'Web',
       'Called by web page, please select',
       this.onUserSelectedYes,
@@ -56,7 +58,7 @@ class App extends Component {
             className="App-link"
             href="#"
             onClick={() => {
-              rpc.someMethodWithError().catch((err) => alert(err.message));
+              window.MyJSInterface.someMethodWithError().catch((err) => alert(err.message));
             }}
           >
             Call Native With Error
@@ -66,7 +68,11 @@ class App extends Component {
             className="App-link"
             href="#"
             onClick={() => {
-              rpc.someMethodThatNotExists().catch((err) => alert(err.message));
+              if (window.MyJSInterface.someMethodThatNotExists) {
+                window.MyJSInterface.someMethodThatNotExists().catch((err) => alert(err.message));
+              } else {
+                alert('method is not exist: someMethodThatNotExists()');
+              }
             }}
           >
             Call Native Not Provided Method
