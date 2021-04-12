@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/rocwind/react-native-webview-comlink/compare/v0.5.1...v0.6.0) (2021-04-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* withComlinkExpose() now needs a name param to define the interface name on web side
+* change the option name whitelistUrls to whitelistURLs
+
+### Features
+
+* support inject a interface from native to web ([3e4ca72](https://github.com/rocwind/react-native-webview-comlink/commit/3e4ca7227a9d76d8ad9c79c2c3348af797d29e2d))
+
+
+* change the option name whitelistUrls to whitelistURLs ([4e61886](https://github.com/rocwind/react-native-webview-comlink/commit/4e618861c5c203e4b0a3952a5030e158019834de))
+
 ### [0.5.1](https://github.com/rocwind/react-native-webview-comlink/compare/v0.5.0...v0.5.1) (2020-05-16)
 
 ## [0.5.0](https://github.com/rocwind/react-native-webview-comlink/compare/v0.4.4...v0.5.0) (2020-04-27)
