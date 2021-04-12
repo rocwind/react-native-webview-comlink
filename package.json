@@ -13,9 +13,13 @@
     "build": "npm run clean && npm run compile && npm run rollup-web",
     "postbuild": "cp -r lib examples/web/node_modules/react-native-webview-comlink/lib && cp package.json examples/web/node_modules/react-native-webview-comlink/package.json && cp -r lib examples/native/node_modules/react-native-webview-comlink/lib && cp package.json examples/native/node_modules/react-native-webview-comlink/package.json",
     "compile": "tsc -d",
-    "rollup-web": "rollup -c rollup.config.web.js",
+    "rollup-web": "rollup --config",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
-    "test": "npm run build && jest"
+    "test": "npm run build && jest",
+    "start": "",
+    "start:tsc": "cd examples/web && npm start",
+    "start:example-web": "cd examples/web && npm start",
+    "start:example-native": "cd examples/native && npm start"
   },
   "repository": {
     "type": "git",
@@ -37,11 +41,16 @@
     "comlinkjs": "^3.2.0",
     "hoist-non-react-statics": "^3.3.2",
     "message-port-polyfill": "^0.2.0",
-    "wait-ready": "^0.5.1"
+    "wait-ready": "^0.5.4"
   },
   "devDependencies": {
+    "@babel/core": "7.13.15",
+    "@babel/preset-env": "7.13.15",
+    "@rollup/plugin-babel": "5.3.0",
+    "@rollup/plugin-node-resolve": "11.2.1",
     "@types/react": "17.0.3",
     "@types/react-native": "0.64.2",
+    "concurrently": "^6.0.1",
     "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.65.2",
     "react": "16.11.0",
@@ -49,7 +58,6 @@
     "react-native-webview": "11.3.2",
     "react-test-renderer": "17.0.1",
     "rollup": "2.45.1",
-    "rollup-plugin-node-resolve": "5.2.0",
     "standard-version": "9.2.0",
     "typescript": "4.2.4"
   }
