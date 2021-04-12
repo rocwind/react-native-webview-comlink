@@ -20,7 +20,7 @@ type HigherOrderComponentCreator<Props> = (component: ComponentType<Props>) => C
 /**
  * withComlinkExpose HOC config
  */
-interface Config {
+interface Options {
     /**
      * forward ref to the wrapped component, default is `false`
      */
@@ -28,7 +28,7 @@ interface Config {
     /**
      * white list urls where Comlink enabled, default is `null`
      */
-    whitelistUrls?: (string | RegExp)[];
+    whitelistURLs?: (string | RegExp)[];
     /**
      * for control Comlink enable or disable status, default is `null`
      */
@@ -50,12 +50,12 @@ interface RefForwardingProps {
  */
 export function withComlinkExpose<Props extends WebViewProps>(
     rootObj: Exposable,
-    config: Config = {},
+    options?: Options,
 ): HigherOrderComponentCreator<Props> {
-    const logger: Logger = createLogger(config.log);
-    const whitelistUrls: RegExp[] | null =
-        config.whitelistUrls &&
-        config.whitelistUrls.map((pattern) => {
+    const logger: Logger = createLogger(options.log);
+    const whitelistURLs: RegExp[] | null =
+        options.whitelistURLs &&
+        options.whitelistURLs.map((pattern) => {
             if (typeof pattern === 'string') {
                 return new RegExp(pattern);
             }
@@ -86,7 +86,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
                 if (!this.isCurrentUrlInWhitelist) {
                     return false;
                 }
-                if (config.isEnabled && !config.isEnabled()) {
+                if (options.isEnabled && !options.isEnabled()) {
                     return false;
                 }
                 return true;
@@ -115,9 +115,9 @@ export function withComlinkExpose<Props extends WebViewProps>(
 
             onNavigationStateChange = (event: WebViewNavigation) => {
                 const { url } = event;
-                if (whitelistUrls && url && url.startsWith('http')) {
+                if (whitelistURLs && url && url.startsWith('http')) {
                     // check if the url in whitelist, skip js bridge urls like `react-js-navigation://xxx`
-                    this.isCurrentUrlInWhitelist = !!whitelistUrls.find((reg) => reg.test(url));
+                    this.isCurrentUrlInWhitelist = !!whitelistURLs.find((reg) => reg.test(url));
                     logger(`${url} is in whitelist: ${this.isCurrentUrlInWhitelist}`);
                 }
 
@@ -141,7 +141,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             }
         }
 
-        if (config.forwardRef) {
+        if (options.forwardRef) {
             const forwarded = forwardRef((props, ref) => {
                 return <ComponentWithComlinkExpose {...(props as Props)} forwardedRef={ref} />;
             }) as any;
