@@ -56,7 +56,7 @@ Just call methods on window.`name`
 
 ## Compatibility
 
-`comlink` depends on some ES6+ features such as:
+`Comlink` depends on some ES6+ features such as:
 
 -   [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
 -   [Generator Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)

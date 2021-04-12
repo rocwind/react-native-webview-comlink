@@ -44,7 +44,6 @@ export function createExposableProxy(target: Exposable): Exposable {
     }
     return new Proxy(target, {
         get: (target, prop) => {
-            console.log(prop);
             if (prop in target) {
                 // prop exists
                 const source = target[prop];

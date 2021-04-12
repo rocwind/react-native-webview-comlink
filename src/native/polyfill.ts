@@ -1,7 +1,7 @@
 // polyfill self for comlinkjs
-const global = (function () {
+const globalObj = (function () {
     return this;
 })();
-if (!global.self) {
-    global.self = global;
+if (!globalObj.self) {
+    globalObj.self = globalObj;
 }

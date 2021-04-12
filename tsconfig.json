@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2017",
+    "target": "es6",
     "lib": ["es5", "es2015", "es2016", "es2017"],
-    "types": [],
     "downlevelIteration": false,
     "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowJs": true,
     "outDir": "lib"
   },
-  "include": ["src/**/*.*"]
+  "include": ["src/**/*.*"],
+  "exclude": ["src/**/*.spec.ts", "src/**/*.spec.tsx"]
 }
