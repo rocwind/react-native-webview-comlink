@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "comlinkjs": "^3.2.0",
     "core-js": "^3.6.5",
     "proxy-polyfill": "^0.3.0",
     "react": "^16.11.0",

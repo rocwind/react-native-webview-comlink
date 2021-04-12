@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import rpc, { rpcReady } from './rpc';
+import { rpc, rpcReady } from './rpc';
 
 class App extends Component {
   constructor(props) {
