@@ -1,6 +1,4 @@
-export interface Logger {
-    (msg: string): void;
-}
+export type Logger = (msg: string) => void;
 
 export function createLogger(log?: boolean | Logger): Logger {
     if (!log) {

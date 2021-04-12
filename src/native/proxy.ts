@@ -2,33 +2,43 @@ import { Exposable } from 'comlinkjs';
 
 type PropType = string | number | symbol;
 
-const createNotExistsPropErrorHandler = (prop: PropType) => () => Promise.reject({
-    message: `prop: ${String(prop)} is not exsits`,
-});
+function createNotExistsPropErrorHandler(prop: PropType): () => Promise<unknown> {
+    return () =>
+        Promise.reject({
+            message: `prop: ${String(prop)} is not exsits`,
+        });
+}
 
-const promisify = (rpcMethod: Function) => (...args: any[]) => Promise.resolve()
-    .then(() => rpcMethod(...args))
-    .catch((err) => {
-        if (err instanceof Error) {
-            const { message,
-                // read-only properties, may cause error on iOS9 webview
-                name, stack,
-                line, column, sourceURL,
-                ...rest
-            } = err as any;
-            throw {
-                message,
-                ...rest,
-            };
-        }
-        throw err;
-    });
+function promisify(rpcMethod: Function) {
+    return (...args: any[]) =>
+        Promise.resolve()
+            .then(() => rpcMethod(...args))
+            .catch((err) => {
+                if (err instanceof Error) {
+                    const {
+                        message,
+                        // read-only properties, may cause error on iOS9 webview
+                        name,
+                        stack,
+                        line,
+                        column,
+                        sourceURL,
+                        ...rest
+                    } = err as any;
+                    throw {
+                        message,
+                        ...rest,
+                    };
+                }
+                throw err;
+            });
+}
 
 const RESERVED_PROPS: PropType[] = [
     'then', // used in promise.resolve()@es6-extensions
 ];
 
-const createExposableProxy = (target: Exposable): Exposable => {
+export function createExposableProxy(target: Exposable): Exposable {
     if (typeof target === 'function') {
         return promisify(target);
     }
@@ -47,8 +57,6 @@ const createExposableProxy = (target: Exposable): Exposable => {
                 return undefined;
             }
             return createNotExistsPropErrorHandler(prop);
-        }
+        },
     });
-};
-
-export default createExposableProxy;
+}

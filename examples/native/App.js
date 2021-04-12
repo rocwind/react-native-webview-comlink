@@ -27,7 +27,10 @@ export default class App extends React.Component {
     };
 
     // create higher-order WebView component
-    this.WebViewComponent = withComlinkExpose(rootObj, { forwardRef: true, log: true })(WebView);
+    this.WebViewComponent = withComlinkExpose(rootObj, 'MyJSInterface', {
+      forwardRef: true,
+      log: true,
+    })(WebView);
 
     this.ref = React.createRef();
   }

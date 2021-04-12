@@ -1,28 +1,26 @@
 import 'message-port-polyfill';
 import './polyfill';
-import * as React from 'react';
-import { ComponentType, Component, forwardRef } from 'react';
-import { Exposable, expose } from 'comlinkjs';
-import { wrap } from 'comlinkjs/messagechanneladapter';
+import React, { ComponentType, Component, forwardRef } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
+import { Exposable, expose } from 'comlinkjs';
+import { wrap } from '../common/messagechanneladapter';
 import {
     WebView,
     WebViewProps,
     WebViewMessageEvent,
     WebViewNavigation,
 } from 'react-native-webview';
-import WebViewMessageChannel, { isEnabledGetter } from './messagechannel';
-import createExposableProxy from './proxy';
+import { WebViewMessageChannel, isEnabledGetter } from './messagechannel';
+import { createExposableProxy } from './proxy';
 import { Logger, createLogger } from './logger';
+import { Injector } from './injector';
 
-interface HigherOrderComponentCreator<Props> {
-    (component: ComponentType<Props>): ComponentType<Props>;
-}
+type HigherOrderComponentCreator<Props> = (component: ComponentType<Props>) => ComponentType<Props>;
 
 /**
  * withComlinkExpose HOC config
  */
-interface Config {
+interface Options {
     /**
      * forward ref to the wrapped component, default is `false`
      */
@@ -30,7 +28,7 @@ interface Config {
     /**
      * white list urls where Comlink enabled, default is `null`
      */
-    whitelistUrls?: (string | RegExp)[];
+    whitelistURLs?: (string | RegExp)[];
     /**
      * for control Comlink enable or disable status, default is `null`
      */
@@ -47,27 +45,28 @@ interface RefForwardingProps {
 
 /**
  * wrap webview component with Comlink support
- * @param rootObj the root object expose to Comlink
+ * @param rootObj the root object exposed via Comlink
+ * @param name the name for the exposed object - window[name] in web side
  * @param config
  */
 export function withComlinkExpose<Props extends WebViewProps>(
     rootObj: Exposable,
-    config: Config = {},
+    name: string,
+    options?: Options,
 ): HigherOrderComponentCreator<Props> {
-    const logger: Logger = createLogger(config.log);
-    const whitelistUrls: RegExp[] | null =
-        config.whitelistUrls &&
-        config.whitelistUrls.map((pattern) => {
-            if (typeof pattern === 'string') {
-                return new RegExp(pattern);
-            }
-            return pattern;
-        });
+    const logger: Logger = createLogger(options?.log);
+    const whitelistURLs: RegExp[] | null = options?.whitelistURLs?.map((pattern) => {
+        if (typeof pattern === 'string') {
+            return new RegExp(pattern);
+        }
+        return pattern;
+    });
 
     return (WrappedComponent: ComponentType<Props>) => {
         class ComponentWithComlinkExpose extends Component<Props & RefForwardingProps> {
             private messageChannel: WebViewMessageChannel;
-            private isCurrentUrlInWhitelist: boolean;
+            private injector: Injector;
+            private isCurrentURLInWhitelist: boolean;
 
             static displayName: string = `withwithComlinkExpose(${
                 WrappedComponent.displayName || WrappedComponent.name
@@ -77,18 +76,19 @@ export function withComlinkExpose<Props extends WebViewProps>(
             constructor(props) {
                 super(props);
 
-                this.isCurrentUrlInWhitelist = true;
+                this.isCurrentURLInWhitelist = true;
 
                 // connect and expose the rootObj
                 this.messageChannel = new WebViewMessageChannel(this.isEnabled, logger);
+                this.injector = new Injector(name, rootObj);
                 expose(createExposableProxy(rootObj), wrap(this.messageChannel));
             }
 
             isEnabled = (): boolean => {
-                if (!this.isCurrentUrlInWhitelist) {
+                if (!this.isCurrentURLInWhitelist) {
                     return false;
                 }
-                if (config.isEnabled && !config.isEnabled()) {
+                if (options?.isEnabled && !options.isEnabled()) {
                     return false;
                 }
                 return true;
@@ -96,6 +96,11 @@ export function withComlinkExpose<Props extends WebViewProps>(
 
             setWebViewRef = (ref: WebView) => {
                 this.messageChannel.setWebview(ref);
+                this.injector.setWebview(ref);
+                if (this.isCurrentURLInWhitelist) {
+                    this.injector.inject();
+                }
+
                 const { forwardedRef } = this.props;
                 if (forwardedRef) {
                     if (typeof forwardedRef === 'function') {
@@ -117,10 +122,14 @@ export function withComlinkExpose<Props extends WebViewProps>(
 
             onNavigationStateChange = (event: WebViewNavigation) => {
                 const { url } = event;
-                if (whitelistUrls && url && url.startsWith('http')) {
+                if (whitelistURLs && url?.startsWith('http')) {
                     // check if the url in whitelist, skip js bridge urls like `react-js-navigation://xxx`
-                    this.isCurrentUrlInWhitelist = !!whitelistUrls.find((reg) => reg.test(url));
-                    logger(`${url} is in whitelist: ${this.isCurrentUrlInWhitelist}`);
+                    this.isCurrentURLInWhitelist = !!whitelistURLs.find((reg) => reg.test(url));
+                    logger(`${url} is in whitelist: ${this.isCurrentURLInWhitelist}`);
+                }
+
+                if (url?.startsWith('http') && this.isCurrentURLInWhitelist) {
+                    this.injector.inject();
                 }
 
                 const { onNavigationStateChange } = this.props;
@@ -143,7 +152,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             }
         }
 
-        if (config.forwardRef) {
+        if (options?.forwardRef) {
             const forwarded = forwardRef((props, ref) => {
                 return <ComponentWithComlinkExpose {...(props as Props)} forwardedRef={ref} />;
             }) as any;

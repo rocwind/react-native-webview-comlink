@@ -2,6 +2,7 @@ package com.rnwebviewcomlink;
 
 import android.app.Application;
 import android.content.Context;
+import android.webkit.WebView;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -47,6 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    WebView.setWebContentsDebuggingEnabled(true);
   }
 
   /**
