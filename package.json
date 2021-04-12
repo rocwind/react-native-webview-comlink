@@ -9,14 +9,17 @@
     "lib/"
   ],
   "scripts": {
-    "clean": "rm -rf lib && rm -rf examples/web/node_modules/react-native-webview-comlink/lib && rm -rf examples/native/node_modules/react-native-webview-comlink/lib",
+    "clean": "rm -rf lib",
     "build": "npm run clean && npm run tsc && npm run rollup && node replace-script.js",
-    "postbuild": "cp -r lib examples/web/node_modules/react-native-webview-comlink/lib && cp package.json examples/web/node_modules/react-native-webview-comlink/package.json && cp -r lib examples/native/node_modules/react-native-webview-comlink/lib && cp package.json examples/native/node_modules/react-native-webview-comlink/package.json",
     "tsc": "tsc -d",
     "rollup": "rollup --config",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
     "test": "npm run build && jest",
-    "start": "concurrently npm:start:example-web npm:start:example-native",
+    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:msf-web npm:start:example-web npm:start:msf-native npm:start:example-native",
+    "start:tsc": "npm run tsc -- --watch",
+    "start:rollup": "npm run rollup -- --watch",
+    "start:msf-web": "msf --mode update lib examples/web/node_modules/react-native-webview-comlink/lib",
+    "start:msf-native": "msf --mode update lib examples/native/node_modules/react-native-webview-comlink/lib",
     "start:example-web": "cd examples/web && npm start",
     "start:example-native": "cd examples/native && npm start"
   },
@@ -55,6 +58,7 @@
     "concurrently": "^6.0.1",
     "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.65.2",
+    "msf-cli": "^1.1.0",
     "react": "16.11.0",
     "react-native": "0.63.4",
     "react-native-webview": "11.3.2",

@@ -101,6 +101,6 @@ export function createComlinkProxy<T>(target: T): ProxyResult<T> {
 declare var $EXPOSED_NAME: any;
 declare var $EXPOSED_TARGET: any;
 if (typeof $EXPOSED_NAME === 'string' && !window[$EXPOSED_NAME]) {
-    console.log('$EXPOSED_NAME injected');
+    console.log('[WebViewComlink] $EXPOSED_NAME injected');
     window[$EXPOSED_NAME] = createComlinkProxy($EXPOSED_TARGET);
 }
