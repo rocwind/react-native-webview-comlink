@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.1](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.0...v0.6.1) (2021-04-16)
+
+
+### Bug Fixes
+
+* **examples:** update deps version to address android webview crash issue on Android 5.0 ([535af33](https://github.com/rocwind/react-native-webview-comlink/commit/535af336eeb301d623c91517e73482bcf6e328e8))
+* **examples:** update examples and README according to Android 5.0 compatibility check ([d15e58c](https://github.com/rocwind/react-native-webview-comlink/commit/d15e58cca2f39986642aaf5734129e4ab2c336e5))
+* get injected js interface works on iOS ([e1b4ea5](https://github.com/rocwind/react-native-webview-comlink/commit/e1b4ea53029297ad02dabf9d33a0ac36702a6a9c))
+
 ## [0.6.0](https://github.com/rocwind/react-native-webview-comlink/compare/v0.5.1...v0.6.0) (2021-04-12)
 
 
