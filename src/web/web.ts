@@ -103,4 +103,7 @@ declare var $EXPOSED_TARGET: any;
 if (typeof $EXPOSED_NAME === 'string' && !window[$EXPOSED_NAME]) {
     console.log('[WebViewComlink] $EXPOSED_NAME injected');
     window[$EXPOSED_NAME] = createComlinkProxy($EXPOSED_TARGET);
+    // FIX iOS issue, invoke using window[$EXPOSED_NAME] will cause all the injected scripts being executed once again
+    // and the ready status was reset somehow
+    setReady();
 }

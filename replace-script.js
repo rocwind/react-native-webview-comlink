@@ -8,5 +8,6 @@ const scriptTarget = path.join(__dirname, 'lib/native/script.js');
 const contents = fs.readFileSync(scriptFile, 'utf-8');
 fs.writeFileSync(
     scriptTarget,
-    'export const script = `\n' + contents.replace(/\\/g, '\\\\') + '`;',
+    //                                  \x  -> \\x                   add 'true' to the end, to fix ios inject warnings
+    'export const script = `\n' + contents.replace(/\\/g, '\\\\') + '\ntrue`;',
 );
