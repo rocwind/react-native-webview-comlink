@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import React, { Component } from 'react';
-import { waitFor } from 'wait-ready';
+// import { waitFor } from 'wait-ready';
+import { waitFor } from 'wait-ready/lib/bundle'; // include the cjs es5 compatible bundle to work with Android 5 device
 import logo from './logo.svg';
 import './App.css';
 

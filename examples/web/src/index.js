@@ -1,7 +1,8 @@
-// to polyfill
-import 'core-js';
-// to polyfill proxy - which is not covered by core-js
+// to polyfill proxy on Android 5 default browser (Chrome 38)
+// Proxy has been supported on Chrome 49+ - https://caniuse.com/?search=Proxy
+// it's not necessary to include this polyfill if targets to morden browers
 import 'proxy-polyfill';
+import 'core-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

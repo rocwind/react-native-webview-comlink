@@ -15,10 +15,9 @@
     "rollup": "rollup --config",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
     "test": "jest --forceExit",
-    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:msf-web npm:start:example-web npm:start:msf-native npm:start:example-native",
+    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:example-web npm:start:msf-native npm:start:example-native",
     "start:tsc": "npm run tsc -- --watch",
     "start:rollup": "npm run rollup -- --watch",
-    "start:msf-web": "msf --mode update lib examples/web/node_modules/react-native-webview-comlink/lib",
     "start:msf-native": "msf --mode update lib examples/native/node_modules/react-native-webview-comlink/lib",
     "start:example-web": "cd examples/web && npm start",
     "start:example-native": "cd examples/native && npm start"
@@ -43,7 +42,7 @@
     "comlinkjs": "^3.2.0",
     "hoist-non-react-statics": "^3.3.2",
     "message-port-polyfill": "^0.2.0",
-    "wait-ready": "^0.5.4"
+    "wait-ready": "^0.5.5"
   },
   "devDependencies": {
     "@babel/core": "7.13.15",
@@ -61,7 +60,7 @@
     "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.65.2",
     "msf-cli": "1.1.0",
-    "react": "16.11.0",
+    "react": "17.0.2",
     "react-native": "0.64.0",
     "react-native-webview": "11.4.0",
     "react-test-renderer": "17.0.2",

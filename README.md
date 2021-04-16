@@ -64,7 +64,12 @@ Just call methods on window.`name`
 
 Latest React Native project (0.64.0+) should have no problem to support it, while 0.63.x and before may need [proxy-polyfill](https://github.com/GoogleChrome/proxy-polyfill) to [work with Hermes](https://github.com/facebook/hermes/issues/33)
 
-Necessary polyfills are bundled into the web bundle to work with RN support platforms: Android 5.0+, iOS 10+
+It is compatible with RN support platforms: Android 5.0+, iOS 10+ (depends on the system WebView features)
+
+However, to work with Android 5 stock Chrome browser (System browser can be updated to latest since Android 5, but in case there are devices that keeps using browser before Chrome 49 - Android 5 default is 38), you may need following polyfill libraries included on web page to get it work:
+
+-   [core-js] https://github.com/zloirock/core-js
+-   [proxy-polyfill] https://github.com/GoogleChrome/proxy-polyfill
 
 ## Upgrade from v0.5.x to v0.6.x
 
