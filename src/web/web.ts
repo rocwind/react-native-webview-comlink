@@ -1,6 +1,4 @@
-/* eslint-disable import/first */
 import 'message-port-polyfill';
-
 import { Endpoint, proxy, ProxyResult, proxyValue } from 'comlinkjs';
 import { wrap } from '../common/messagechanneladapter';
 
@@ -48,7 +46,7 @@ function createComlinkProxy<T>(target: T): ProxyResult<T> {
     return keys.reduce((result, key) => {
         result[key] = (...args) => {
             return proxied[key].apply(
-                target,
+                null,
                 args.map((arg) => (typeof arg === 'function' ? proxyValue(arg) : arg)),
             );
         };

@@ -10,6 +10,7 @@ import {
     WebViewMessageEvent,
     WebViewNavigation,
 } from 'react-native-webview';
+import { WebViewProgressEvent } from 'react-native-webview/lib/WebViewTypes';
 import { WebViewMessageChannel, isEnabledGetter } from './messagechannel';
 import { createExposableProxy } from './proxy';
 import { Logger, createLogger } from './logger';
@@ -98,6 +99,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
                 this.messageChannel.setWebview(ref);
                 this.injector.setWebview(ref);
                 if (this.isCurrentURLInWhitelist) {
+                    logger(`inject script on WebView ref ready`);
                     this.injector.inject();
                 }
 
@@ -113,11 +115,8 @@ export function withComlinkExpose<Props extends WebViewProps>(
 
             onMessage = (event: WebViewMessageEvent) => {
                 this.messageChannel.onMessage(event);
-                // delegate to wrapped component
-                const { onMessage } = this.props;
-                if (onMessage) {
-                    onMessage(event);
-                }
+                // delegate to event handler
+                this.props.onMessage?.(event);
             };
 
             onNavigationStateChange = (event: WebViewNavigation) => {
@@ -128,18 +127,22 @@ export function withComlinkExpose<Props extends WebViewProps>(
                     logger(`${url} is in whitelist: ${this.isCurrentURLInWhitelist}`);
                 }
 
-                if (url?.startsWith('http') && this.isCurrentURLInWhitelist) {
+                // delegate to event handler
+                this.props.onNavigationStateChange?.(event);
+            };
+
+            onLoadProgress = (event: WebViewProgressEvent) => {
+                if (event.nativeEvent.progress === 1 && this.isCurrentURLInWhitelist) {
+                    logger(`inject script on page load`);
                     this.injector.inject();
                 }
 
-                const { onNavigationStateChange } = this.props;
-                if (onNavigationStateChange) {
-                    onNavigationStateChange(event);
-                }
+                // delegate to event handler
+                this.props.onLoadProgress?.(event);
             };
 
             render() {
-                const { onMessage, onNavigationStateChange, ...props } = this.props;
+                const { onMessage, onNavigationStateChange, onLoadProgress, ...props } = this.props;
 
                 return (
                     <WrappedComponent
@@ -147,6 +150,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
                         ref={this.setWebViewRef}
                         onMessage={this.onMessage}
                         onNavigationStateChange={this.onNavigationStateChange}
+                        onLoadProgress={this.onLoadProgress}
                     />
                 );
             }
