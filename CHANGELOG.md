@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.2](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.1...v0.6.2) (2021-04-19)
+
+
+### Bug Fixes
+
+* inject script after page loaded ([cce2d71](https://github.com/rocwind/react-native-webview-comlink/commit/cce2d7112e67cfd7bce670bbd489a1e322e6c73b))
+* simplify web side script, do not export functions and remove wait-ready ([e3fee01](https://github.com/rocwind/react-native-webview-comlink/commit/e3fee01cc24897442ff62f07636524372b03f2f9))
+
 ### [0.6.1](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.0...v0.6.1) (2021-04-16)
 
 
