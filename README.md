@@ -98,10 +98,4 @@ However, to work with Android 5 stock Chrome browser (System browser can be upda
 
 ### Web - need to be compatible with app that runs v0.5.x
 
-solution 1: keep using v0.5.x at web side until compatibility is no longer a problem.
-
-solution 2:
-
--   uninstall the `comlinkjs` npm package.
--   upgrade this package to v0.6.x.
--   replace `proxy(createEndpoint(), target)` with `createComlinkProxy(target)`, target is no longer optional.
+-   keep using v0.5.x at web side until compatibility is no longer a problem.
