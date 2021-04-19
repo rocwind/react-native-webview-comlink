@@ -2,6 +2,7 @@
 
 exports[`withComlinkExpose HOC renders correctly 1`] = `
 <WebView
+  onLoadProgress={[Function]}
   onMessage={[Function]}
   onNavigationStateChange={[Function]}
 />
