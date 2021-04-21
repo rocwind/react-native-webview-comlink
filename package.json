@@ -59,7 +59,7 @@
     "msf-cli": "1.1.0",
     "react": "17.0.2",
     "react-native": "0.64.0",
-    "react-native-webview": "11.4.1",
+    "react-native-webview": "11.4.2",
     "react-test-renderer": "17.0.2",
     "rollup": "2.45.2",
     "rollup-plugin-cleanup": "3.2.1",
