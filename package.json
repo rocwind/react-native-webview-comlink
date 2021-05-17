@@ -42,8 +42,8 @@
     "message-port-polyfill": "^0.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.14.2",
-    "@babel/plugin-transform-runtime": "7.14.2",
+    "@babel/core": "7.14.3",
+    "@babel/plugin-transform-runtime": "7.14.3",
     "@babel/preset-env": "7.14.2",
     "@babel/runtime": "7.14.0",
     "@rollup/plugin-babel": "5.3.0",
