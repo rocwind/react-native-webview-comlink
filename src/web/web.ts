@@ -28,10 +28,6 @@ function createEndpoint(): Endpoint {
             // ios
             window.addEventListener(type, listener);
         },
-        dispatchEvent(event) {
-            window.dispatchEvent(event);
-            return document.dispatchEvent(event);
-        },
     });
 }
 
