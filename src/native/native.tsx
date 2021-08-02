@@ -80,7 +80,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
                 this.isCurrentURLInWhitelist = true;
 
                 // connect and expose the rootObj
-                this.messageChannel = new WebViewMessageChannel(this.isEnabled, logger);
+                this.messageChannel = new WebViewMessageChannel(name, this.isEnabled, logger);
                 this.injector = new Injector(name, rootObj);
                 expose(createExposableProxy(rootObj), wrap(this.messageChannel));
             }
@@ -114,7 +114,10 @@ export function withComlinkExpose<Props extends WebViewProps>(
             };
 
             onMessage = (event: WebViewMessageEvent) => {
-                this.messageChannel.onMessage(event);
+                const handled = this.messageChannel.onMessage(event);
+                if (handled) {
+                    return;
+                }
                 // delegate to event handler
                 this.props.onMessage?.(event);
             };
