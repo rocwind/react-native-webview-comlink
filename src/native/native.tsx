@@ -68,6 +68,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             private messageChannel: WebViewMessageChannel;
             private injector: Injector;
             private isCurrentURLInWhitelist: boolean;
+            private currentURL: string;
 
             static displayName: string = `withwithComlinkExpose(${
                 WrappedComponent.displayName || WrappedComponent.name
@@ -77,7 +78,9 @@ export function withComlinkExpose<Props extends WebViewProps>(
             constructor(props) {
                 super(props);
 
+                this.currentURL = '';
                 this.isCurrentURLInWhitelist = true;
+                this.onURLUpdated(props.source?.uri);
 
                 // connect and expose the rootObj
                 this.messageChannel = new WebViewMessageChannel(this.isEnabled, logger);
@@ -98,10 +101,6 @@ export function withComlinkExpose<Props extends WebViewProps>(
             setWebViewRef = (ref: WebView) => {
                 this.messageChannel.setWebview(ref);
                 this.injector.setWebview(ref);
-                if (this.isCurrentURLInWhitelist) {
-                    logger(`inject script on WebView ref ready`);
-                    this.injector.inject();
-                }
 
                 const { forwardedRef } = this.props;
                 if (forwardedRef) {
@@ -119,30 +118,44 @@ export function withComlinkExpose<Props extends WebViewProps>(
                 this.props.onMessage?.(event);
             };
 
+            onLoadStart = (event: Parameters<Props['onLoadStart']>[0]) => {
+                const { url } = event.nativeEvent;
+                this.onURLUpdated(url);
+                if (this.isCurrentURLInWhitelist) {
+                    logger(`inject script on page load start`);
+                    this.injector.inject();
+                }
+
+                // delegate to event handler
+                this.props.onLoadStart?.(event);
+            };
+
             onNavigationStateChange = (event: WebViewNavigation) => {
                 const { url } = event;
-                if (whitelistURLs && url?.startsWith('http')) {
-                    // check if the url in whitelist, skip js bridge urls like `react-js-navigation://xxx`
-                    this.isCurrentURLInWhitelist = !!whitelistURLs.find((reg) => reg.test(url));
-                    logger(`${url} is in whitelist: ${this.isCurrentURLInWhitelist}`);
-                }
+                this.onURLUpdated(url);
 
                 // delegate to event handler
                 this.props.onNavigationStateChange?.(event);
             };
 
-            onLoadProgress = (event: WebViewProgressEvent) => {
-                if (event.nativeEvent.progress === 1 && this.isCurrentURLInWhitelist) {
-                    logger(`inject script on page load`);
-                    this.injector.inject();
+            private onURLUpdated(url: string): void {
+                if (url === this.currentURL) {
+                    return;
+                }
+                if (!url?.startsWith('http')) {
+                    return;
                 }
 
-                // delegate to event handler
-                this.props.onLoadProgress?.(event);
-            };
+                this.currentURL = url;
+                if (whitelistURLs) {
+                    // check if the url in whitelist, skip js bridge urls like `react-js-navigation://xxx`
+                    this.isCurrentURLInWhitelist = !!whitelistURLs.find((reg) => reg.test(url));
+                    logger(`${url} is in whitelist: ${this.isCurrentURLInWhitelist}`);
+                }
+            }
 
             render() {
-                const { onMessage, onNavigationStateChange, onLoadProgress, ...props } = this.props;
+                const { onMessage, onNavigationStateChange, onLoadStart, ...props } = this.props;
 
                 return (
                     <WrappedComponent
@@ -150,7 +163,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
                         ref={this.setWebViewRef}
                         onMessage={this.onMessage}
                         onNavigationStateChange={this.onNavigationStateChange}
-                        onLoadProgress={this.onLoadProgress}
+                        onLoadStart={this.onLoadStart}
                     />
                 );
             }
