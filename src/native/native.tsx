@@ -1,6 +1,7 @@
 import 'message-port-polyfill';
 import './polyfill';
 import React, { ComponentType, Component, forwardRef } from 'react';
+import { Platform } from 'react-native';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { Exposable, expose } from 'comlinkjs';
 import { wrap } from '../common/messagechanneladapter';
@@ -35,6 +36,17 @@ interface Options {
      */
     isEnabled?: isEnabledGetter;
     /**
+     * the interface is injected on load end by default, set to `true`
+     * to get the interface injected on load start
+     * NOTE:
+     * - it only works for Android, iOS will ignore this option as
+     * it's necessary to inject on load end for iOS to work
+     * - if target lower browser version device where it needs polyfills,
+     * it's better to inject on load end where those polyfills are already
+     * loaded with web page
+     */
+    injectOnLoadStart?: boolean;
+    /**
      * print debug log to console or not, default is `false`
      */
     log?: boolean | Logger;
@@ -63,21 +75,25 @@ export function withComlinkExpose<Props extends WebViewProps>(
         return pattern;
     });
 
+    const injectOnLoadStart = Platform.OS === 'android' && options?.injectOnLoadStart;
+
     return (WrappedComponent: ComponentType<Props>) => {
         class ComponentWithComlinkExpose extends Component<Props & RefForwardingProps> {
             private messageChannel: WebViewMessageChannel;
             private injector: Injector;
             private isCurrentURLInWhitelist: boolean;
             private currentURL: string;
+            private isProgressMax: boolean;
 
             static displayName: string = `withwithComlinkExpose(${
-                WrappedComponent.displayName || WrappedComponent.name
+                WrappedComponent.displayName || WrappedComponent.name || 'Component'
             })`;
             static WrappedComponent: ComponentType<Props> = WrappedComponent;
 
             constructor(props) {
                 super(props);
 
+                this.isProgressMax = false;
                 this.currentURL = '';
                 this.isCurrentURLInWhitelist = true;
                 this.onURLUpdated(props.source?.uri);
@@ -118,24 +134,45 @@ export function withComlinkExpose<Props extends WebViewProps>(
                 this.props.onMessage?.(event);
             };
 
-            onLoadStart = (event: Parameters<Props['onLoadStart']>[0]) => {
-                const { url } = event.nativeEvent;
-                this.onURLUpdated(url);
-                if (this.isCurrentURLInWhitelist) {
-                    logger(`inject script on page load start`);
-                    this.injector.inject();
-                }
-
-                // delegate to event handler
-                this.props.onLoadStart?.(event);
-            };
-
             onNavigationStateChange = (event: WebViewNavigation) => {
                 const { url } = event;
                 this.onURLUpdated(url);
 
                 // delegate to event handler
                 this.props.onNavigationStateChange?.(event);
+            };
+
+            onLoadStart = (event: Parameters<Props['onLoadStart']>[0]) => {
+                const { url } = event.nativeEvent;
+                this.onURLUpdated(url);
+                if (injectOnLoadStart && this.isCurrentURLInWhitelist) {
+                    logger(`inject script on page load start`);
+                    this.injector.inject();
+                }
+
+                this.isProgressMax = false;
+
+                // delegate to event handler
+                this.props.onLoadStart?.(event);
+            };
+
+            onLoadProgress = (event: WebViewProgressEvent) => {
+                // inject on load progress 1 here,
+                // since onLoadEnd() might not get called on Android redirect cases
+                if (event.nativeEvent.progress === 1) {
+                    // there might be multiple progress 1 events for a single load
+                    // ignores the rest ones by checking if the progress is already max
+                    if (!injectOnLoadStart && !this.isProgressMax && this.isCurrentURLInWhitelist) {
+                        logger(`inject script on page load end`);
+                        this.injector.inject();
+                    }
+                    this.isProgressMax = true;
+                } else {
+                    this.isProgressMax = false;
+                }
+
+                // delegate to event handler
+                this.props.onLoadProgress?.(event);
             };
 
             private onURLUpdated(url: string): void {
@@ -155,15 +192,14 @@ export function withComlinkExpose<Props extends WebViewProps>(
             }
 
             render() {
-                const { onMessage, onNavigationStateChange, onLoadStart, ...props } = this.props;
-
                 return (
                     <WrappedComponent
-                        {...(props as Props)}
+                        {...this.props}
                         ref={this.setWebViewRef}
                         onMessage={this.onMessage}
                         onNavigationStateChange={this.onNavigationStateChange}
                         onLoadStart={this.onLoadStart}
+                        onLoadProgress={this.onLoadProgress}
                     />
                 );
             }

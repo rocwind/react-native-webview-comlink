@@ -14,6 +14,7 @@ import { waitFor } from 'wait-ready/lib/bundle'; // include the cjs es5 compatib
 import logo from './logo.svg';
 import './App.css';
 
+console.log('app script loaded');
 // detect rpc ready status by checking if window.MyJSInterface exists
 // do check each 200 ms and timeout after 3s
 export const rpcReady = waitFor(() => window.MyJSInterface, { checkInterval: 200, timeout: 3000 });
@@ -25,6 +26,7 @@ class App extends Component {
       rpcStatus: 'checking...',
       userSelected: 'not started',
     };
+    console.log('app constructor');
 
     rpcReady
       .then(() => {
