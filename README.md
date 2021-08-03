@@ -56,6 +56,7 @@ There are example [React Native project](examples/native) and [Web project(React
     -   [`forwardRef`] _(Boolean)_: forward ref to the wrapped component, default is `false`
     -   [`whitelistURLs`] _(String or RegExp Array)_: white list urls where `Comlink` enabled, default is `null`
     -   [`isEnabled`] _(Function)_: for control Comlink enable or disable status, it gets called in sending and receiving each message, returns `true` to let the message pass, default is `null`
+    -   [`injectOnLoadStart`] _(Boolean)_: inject the `obj` on load start on Android, default is `false` - inject on load end
     -   [`log`] _(Boolean)_: print debug log to console, default is `false`
 
 ### Web

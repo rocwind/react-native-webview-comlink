@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`withComlinkExpose HOC renders correctly 1`] = `
-<WebView
-  onLoadProgress={[Function]}
-  onMessage={[Function]}
-  onNavigationStateChange={[Function]}
-/>
-`;

@@ -43,6 +43,12 @@ export default class App extends React.Component {
           style={styles.container}
           source={{ uri }}
           ref={this.ref}
+          onLoadStart={(evt) => {
+            console.log('onLoadStart', evt.nativeEvent.url);
+          }}
+          onLoadEnd={(evt) => {
+            console.log('onLoadEnd', evt.nativeEvent.url);
+          }}
         ></this.WebViewComponent>
       </SafeAreaView>
     );

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.3](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.2...v0.6.3) (2021-08-03)
+
+
+### Features
+
+* add injectOnLoadStart option ([0552bd5](https://github.com/rocwind/react-native-webview-comlink/commit/0552bd5871d4f990c6aba3571685aa0bb47fc13d))
+
+
+### Bug Fixes
+
+* **deps:** update jest, ts-jest to v27 ([0cbffe1](https://github.com/rocwind/react-native-webview-comlink/commit/0cbffe1262548604ffbad6142e2170f905b61335))
+* inject script to webview on page load start to get the interface available earlier ([4fd5a8c](https://github.com/rocwind/react-native-webview-comlink/commit/4fd5a8cbac4772f61c2c66edd2f1679f17511330))
+
 ### [0.6.2](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.1...v0.6.2) (2021-04-19)
 
 
