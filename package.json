@@ -13,7 +13,7 @@
     "rollup": "rollup --config",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
     "test": "echo \"no tests\"",
-    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:example-web npm:start:msf-native npm:start:example-native",
+    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:example-web npm:start:msf-native npm:start:example-native --raw",
     "start:tsc": "npm run tsc -- --watch",
     "start:rollup": "npm run rollup -- --watch",
     "start:msf-native": "msf --mode update lib examples/native/node_modules/react-native-webview-comlink/lib",
