@@ -1,13 +1,18 @@
 import { StringMessageChannel } from '../common/messagechanneladapter';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { Logger } from './logger';
+import { Injector } from './injector';
 
 export type isEnabledGetter = () => boolean;
 export class WebViewMessageChannel implements StringMessageChannel {
     private webview: WebView;
     private listeners: EventListenerOrEventListenerObject[] = [];
 
-    constructor(private isEnabled: isEnabledGetter, private logger: Logger) {}
+    constructor(
+        private isEnabled: isEnabledGetter,
+        private injector: Injector,
+        private logger: Logger,
+    ) {}
 
     send(data: string) {
         this.logger(`sending message to webview: ${data}`);
@@ -46,10 +51,16 @@ export class WebViewMessageChannel implements StringMessageChannel {
     }
 
     onMessage(event: WebViewMessageEvent) {
-        this.logger(`received message from webview: ${JSON.stringify(event.nativeEvent.data)}`);
+        this.logger(`received message from webview: ${event.nativeEvent.data}`);
         if (!this.isEnabled()) {
             this.logger('MessageChannel is disabled, drop received message');
             return;
+        }
+
+        // TODO: put the constants in a separate file
+        if (event.nativeEvent.data === 'RNWC|@INIT') {
+            this.logger(`inject script on page init`);
+            this.injector.inject();
         }
 
         this.listeners.forEach((listener) => {

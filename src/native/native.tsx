@@ -85,7 +85,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             private currentURL: string;
             private isProgressMax: boolean;
 
-            static displayName: string = `withwithComlinkExpose(${
+            static displayName: string = `withComlinkExpose(${
                 WrappedComponent.displayName || WrappedComponent.name || 'Component'
             })`;
             static WrappedComponent: ComponentType<Props> = WrappedComponent;
@@ -99,8 +99,12 @@ export function withComlinkExpose<Props extends WebViewProps>(
                 this.onURLUpdated(props.source?.uri);
 
                 // connect and expose the rootObj
-                this.messageChannel = new WebViewMessageChannel(this.isEnabled, logger);
                 this.injector = new Injector(name, rootObj);
+                this.messageChannel = new WebViewMessageChannel(
+                    this.isEnabled,
+                    this.injector,
+                    logger,
+                );
                 expose(createExposableProxy(rootObj), wrap(this.messageChannel));
             }
 
