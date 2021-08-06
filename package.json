@@ -1,6 +1,6 @@
 {
   "name": "react-native-webview-comlink",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Add JavaScript interface for react-native-webview, based on Comlink",
   "main": "lib/native/native.js",
   "files": [
@@ -13,7 +13,7 @@
     "rollup": "rollup --config",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
     "test": "echo \"no tests\"",
-    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:example-web npm:start:msf-native npm:start:example-native",
+    "start": "concurrently npm:start:tsc npm:start:rollup npm:start:example-web npm:start:msf-native npm:start:example-native --raw",
     "start:tsc": "npm run tsc -- --watch",
     "start:rollup": "npm run rollup -- --watch",
     "start:msf-native": "msf --mode update lib examples/native/node_modules/react-native-webview-comlink/lib",
@@ -42,9 +42,9 @@
     "message-port-polyfill": "^0.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.14.8",
-    "@babel/plugin-transform-runtime": "7.14.5",
-    "@babel/preset-env": "7.14.9",
+    "@babel/core": "7.15.0",
+    "@babel/plugin-transform-runtime": "7.15.0",
+    "@babel/preset-env": "7.15.0",
     "@babel/runtime": "7.14.8",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-commonjs": "20.0.0",
@@ -57,8 +57,8 @@
     "msf-cli": "1.2.2",
     "react": "^17.0.1",
     "react-native": "0.64.2",
-    "react-native-webview": "11.6.5",
-    "rollup": "2.55.1",
+    "react-native-webview": "11.6.6",
+    "rollup": "2.56.0",
     "rollup-plugin-cleanup": "3.2.1",
     "standard-version": "9.3.1",
     "typescript": "4.3.5"

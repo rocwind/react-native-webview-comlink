@@ -85,7 +85,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             private currentURL: string;
             private isProgressMax: boolean;
 
-            static displayName: string = `withwithComlinkExpose(${
+            static displayName: string = `withComlinkExpose(${
                 WrappedComponent.displayName || WrappedComponent.name || 'Component'
             })`;
             static WrappedComponent: ComponentType<Props> = WrappedComponent;

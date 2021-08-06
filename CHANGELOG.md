@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.4](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.3...v0.6.4) (2021-08-05)
+
+
+### Features
+
+* inject can be triggered from web side by post message ([2dae324](https://github.com/rocwind/react-native-webview-comlink/commit/2dae32465d893c7ff31c7c3a1497d9004572bfa8))
+
 ### [0.6.3](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.2...v0.6.3) (2021-08-03)
 
 
