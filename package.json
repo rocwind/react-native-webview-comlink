@@ -50,7 +50,7 @@
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@types/hoist-non-react-statics": "3.3.1",
-    "@types/react": "17.0.15",
+    "@types/react": "17.0.16",
     "@types/react-native": "0.64.12",
     "concurrently": "6.2.0",
     "metro-react-native-babel-preset": "0.66.2",
