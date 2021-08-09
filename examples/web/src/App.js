@@ -1,40 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 
-// to polyfill proxy on Android 5 default browser (Chrome 38)
-// Proxy has been supported on Chrome 49+ - https://caniuse.com/?search=Proxy
-// it's not necessary to include this polyfill if targets to morden browers
-import 'proxy-polyfill';
-// to polyfill Object.assign and other ES2015 api that used by comlink
-// it's not necessary to include this polyfill if targets to morden browers
-import 'core-js';
-
-// import { waitFor } from 'wait-ready';
-import { waitFor } from 'wait-ready/lib/bundle'; // include the cjs es5 compatible bundle to work with Android 5 device
 import logo from './logo.svg';
 import './App.css';
 
 console.log('app script loaded');
-// detect rpc ready status by checking if window.MyJSInterface exists
-// do check each 200 ms and timeout after 3s
-export const rpcReady = waitFor(() => window.MyJSInterface, { checkInterval: 200, timeout: 3000 });
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rpcStatus: 'checking...',
+      rpcStatus: window.MyJSInterface ? 'ready' : 'failed',
       userSelected: 'not started',
     };
     console.log('app constructor');
-
-    rpcReady
-      .then(() => {
-        this.setState({ rpcStatus: 'ready' });
-      })
-      .catch(() => {
-        this.setState({ rpcStatus: 'failed' });
-      });
   }
 
   handleClick = () => {
@@ -64,7 +43,11 @@ class App extends Component {
             href="#"
             onClick={() => {
               // errors in native can be handled
-              window.MyJSInterface.someMethodWithError().catch((err) => alert(err.message));
+              const perf = window.performance ? performance : Date;
+              const start = perf.now();
+              window.MyJSInterface.someMethodWithError().catch((err) =>
+                alert(`${err.message} [${err.code}]\nperf: ${(perf.now() - start).toFixed(2)}`),
+              );
             }}
           >
             Call Native With Error

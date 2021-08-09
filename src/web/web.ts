@@ -1,82 +1,49 @@
-import 'message-port-polyfill';
-import { Endpoint, proxy, ProxyResult, proxyValue } from 'comlinkjs';
-import { wrap } from '../common/messagechanneladapter';
-import { MessageChannelHub } from '../common/messagechannelhub';
+import { JavascriptInterface, MessageEvent } from './types';
+import { MessageHub } from '../common/MessageHub';
+import { createTransmitter } from '../common/message';
+import { createLogger } from '../common/logger';
 
+// place holders
+declare var $EXPOSED_NAME: string;
+declare var $EXPOSED_TARGET: any;
+declare var $PLATFORM_OS: 'android' | 'ios';
+declare var $LOG_ENABLED: boolean;
+
+const logger = createLogger($LOG_ENABLED);
 /**
- * create a Comlink endpoint
+ * create Javascript interface object
+ * @param target
  */
-function createEndpoint(name: string): Endpoint {
-    const hub = new MessageChannelHub(name);
-    const listenerProxy = (evt: MessageEvent) => {
-        if (hub.canHandleMessageEvent(evt)) {
-            hub.handleMessageEvent(evt);
+function createInterface<T>(
+    name: string,
+    target: T,
+    os: 'android' | 'ios',
+): JavascriptInterface<T> {
+    const hub = new MessageHub(name, window.ReactNativeWebView);
+    const listener = (evt: MessageEvent) => {
+        const msg = evt.data;
+        if (hub.canHandleMessage(msg)) {
+            logger(`received message from native ${msg}`);
+            hub.handleMessage(msg);
         }
     };
 
-    return wrap({
-        send(data) {
-            (<any>window).ReactNativeWebView.postMessage(hub.encodeMessage(data));
-        },
+    if (os === 'android') {
+        document.addEventListener('message', listener);
+    } else if (os === 'ios') {
+        window.addEventListener('message', listener);
+    }
 
-        addEventListener(type, listener) {
-            if (type !== 'message') {
-                throw Error(`unsupported event type: ${type}`);
-            }
-
-            if (!hub.addEventListener(listener)) {
-                return;
-            }
-            if (hub.getListenersCount() === 1) {
-                // android
-                document.addEventListener(type, listenerProxy);
-                // ios
-                window.addEventListener(type, listenerProxy);
-            }
-        },
-        removeEventListener(type, listener) {
-            if (type !== 'message') {
-                throw Error(`unsupported event type: ${type}`);
-            }
-            if (!hub.removeEventListener(listener)) {
-                return;
-            }
-
-            if (hub.getListenersCount() === 0) {
-                // android
-                document.removeEventListener(type, listenerProxy);
-                // ios
-                window.addEventListener(type, listenerProxy);
-            }
-        },
-    });
-}
-
-/**
- * create Comlink proxy object
- * @param target
- */
-function createComlinkProxy<T>(name: string, target: T): ProxyResult<T> {
-    const keys = Object.keys(target);
-    const proxied = proxy(createEndpoint(name), target);
-    // auto proxy function arg
-    return keys.reduce((result, key) => {
-        result[key] = (...args) => {
-            return proxied[key].apply(
-                null,
-                args.map((arg) => (typeof arg === 'function' ? proxyValue(arg) : arg)),
-            );
-        };
-        return result;
-    }, {} as ProxyResult<T>);
+    return Object.keys(target).reduce((obj, key) => {
+        obj[key] = createTransmitter(key, hub);
+        return obj;
+    }, {} as JavascriptInterface<T>);
 }
 
 /**
  * for native bundle to inject
  */
-declare var $EXPOSED_NAME: any;
-declare var $EXPOSED_TARGET: any;
 if (typeof $EXPOSED_NAME === 'string' && !window[$EXPOSED_NAME]) {
-    console.log('[WebViewComlink] $EXPOSED_NAME injected');
-    window[$EXPOSED_NAME] = createComlinkProxy($EXPOSED_NAME, $EXPOSED_TARGET);
+    logger('$EXPOSED_NAME injected');
+    window[$EXPOSED_NAME] = createInterface($EXPOSED_NAME, $EXPOSED_TARGET, $PLATFORM_OS);
 }

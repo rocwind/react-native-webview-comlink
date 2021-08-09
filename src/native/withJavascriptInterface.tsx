@@ -1,21 +1,14 @@
-import 'message-port-polyfill';
-import './polyfill';
 import React, { ComponentType, Component, forwardRef } from 'react';
-import { Platform } from 'react-native';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import { Exposable, expose } from 'comlinkjs';
-import { wrap } from '../common/messagechanneladapter';
 import {
     WebView,
     WebViewProps,
     WebViewMessageEvent,
     WebViewNavigation,
 } from 'react-native-webview';
-import { WebViewProgressEvent } from 'react-native-webview/lib/WebViewTypes';
-import { WebViewMessageChannel, isEnabledGetter } from './messagechannel';
-import { createExposableProxy } from './proxy';
-import { Logger, createLogger } from './logger';
-import { Injector } from './injector';
+import { InterfaceProvider, isEnabledGetter } from './InterfaceProvider';
+import { Logger, createLogger } from '../common/logger';
+import { WebScriptComposer } from './WebScriptComposer';
 
 type HigherOrderComponentCreator<Props> = (component: ComponentType<Props>) => ComponentType<Props>;
 
@@ -57,13 +50,13 @@ interface RefForwardingProps {
 }
 
 /**
- * wrap webview component with Comlink support
- * @param rootObj the root object exposed via Comlink
+ * wrap webview component with JavascriptInterface
+ * @param rootObj the root object exposed as JavascriptInterface
  * @param name the name for the exposed object - window[name] in web side
  * @param config
  */
-export function withComlinkExpose<Props extends WebViewProps>(
-    rootObj: Exposable,
+export function withJavascriptInterface<Props extends WebViewProps>(
+    rootObj: any,
     name: string,
     options?: Options,
 ): HigherOrderComponentCreator<Props> {
@@ -75,17 +68,14 @@ export function withComlinkExpose<Props extends WebViewProps>(
         return pattern;
     });
 
-    const injectOnLoadStart = Platform.OS === 'android' && options?.injectOnLoadStart;
-
     return (WrappedComponent: ComponentType<Props>) => {
         class ComponentWithComlinkExpose extends Component<Props & RefForwardingProps> {
-            private messageChannel: WebViewMessageChannel;
-            private injector: Injector;
+            private provider: InterfaceProvider;
+            private composer: WebScriptComposer;
             private isCurrentURLInWhitelist: boolean;
             private currentURL: string;
-            private isProgressMax: boolean;
 
-            static displayName: string = `withComlinkExpose(${
+            static displayName: string = `withJavascriptInterface(${name})(${
                 WrappedComponent.displayName || WrappedComponent.name || 'Component'
             })`;
             static WrappedComponent: ComponentType<Props> = WrappedComponent;
@@ -93,15 +83,12 @@ export function withComlinkExpose<Props extends WebViewProps>(
             constructor(props) {
                 super(props);
 
-                this.isProgressMax = false;
                 this.currentURL = '';
                 this.isCurrentURLInWhitelist = true;
                 this.onURLUpdated(props.source?.uri);
 
-                // connect and expose the rootObj
-                this.messageChannel = new WebViewMessageChannel(name, this.isEnabled, logger);
-                this.injector = new Injector(name, rootObj);
-                expose(createExposableProxy(rootObj), wrap(this.messageChannel));
+                this.provider = new InterfaceProvider(name, rootObj, this.isEnabled, logger);
+                this.composer = new WebScriptComposer(name, rootObj, !!options?.log);
             }
 
             isEnabled = (): boolean => {
@@ -115,8 +102,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             };
 
             setWebViewRef = (ref: WebView) => {
-                this.messageChannel.setWebview(ref);
-                this.injector.setWebview(ref);
+                this.provider.setWebview(ref);
 
                 const { forwardedRef } = this.props;
                 if (forwardedRef) {
@@ -129,7 +115,7 @@ export function withComlinkExpose<Props extends WebViewProps>(
             };
 
             onMessage = (event: WebViewMessageEvent) => {
-                const handled = this.messageChannel.onMessage(event);
+                const handled = this.provider.onMessage(event);
                 if (handled) {
                     return;
                 }
@@ -143,39 +129,6 @@ export function withComlinkExpose<Props extends WebViewProps>(
 
                 // delegate to event handler
                 this.props.onNavigationStateChange?.(event);
-            };
-
-            onLoadStart = (event: Parameters<Props['onLoadStart']>[0]) => {
-                const { url } = event.nativeEvent;
-                this.onURLUpdated(url);
-                if (injectOnLoadStart && this.isCurrentURLInWhitelist) {
-                    logger(`inject script on page load start`);
-                    this.injector.inject();
-                }
-
-                this.isProgressMax = false;
-
-                // delegate to event handler
-                this.props.onLoadStart?.(event);
-            };
-
-            onLoadProgress = (event: WebViewProgressEvent) => {
-                // inject on load progress 1 here,
-                // since onLoadEnd() might not get called on Android redirect cases
-                if (event.nativeEvent.progress === 1) {
-                    // there might be multiple progress 1 events for a single load
-                    // ignores the rest ones by checking if the progress is already max
-                    if (!injectOnLoadStart && !this.isProgressMax && this.isCurrentURLInWhitelist) {
-                        logger(`inject script on page load end`);
-                        this.injector.inject();
-                    }
-                    this.isProgressMax = true;
-                } else {
-                    this.isProgressMax = false;
-                }
-
-                // delegate to event handler
-                this.props.onLoadProgress?.(event);
             };
 
             private onURLUpdated(url: string): void {
@@ -201,8 +154,9 @@ export function withComlinkExpose<Props extends WebViewProps>(
                         ref={this.setWebViewRef}
                         onMessage={this.onMessage}
                         onNavigationStateChange={this.onNavigationStateChange}
-                        onLoadStart={this.onLoadStart}
-                        onLoadProgress={this.onLoadProgress}
+                        injectedJavaScriptBeforeContentLoaded={this.composer.getScriptToInject(
+                            this.props.injectedJavaScriptBeforeContentLoaded,
+                        )}
                     />
                 );
             }

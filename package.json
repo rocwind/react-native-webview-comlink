@@ -2,7 +2,7 @@
   "name": "react-native-webview-comlink",
   "version": "0.6.4",
   "description": "Add JavaScript interface for react-native-webview, based on Comlink",
-  "main": "lib/native/native.js",
+  "main": "lib/index.js",
   "files": [
     "lib/"
   ],
@@ -28,7 +28,8 @@
     "comlink",
     "rpc",
     "react-native",
-    "webview"
+    "webview",
+    "javascriptinterface"
   ],
   "author": "Roc",
   "license": "MIT",
@@ -37,9 +38,7 @@
   },
   "homepage": "https://github.com/rocwind/react-native-webview-comlink#readme",
   "dependencies": {
-    "comlinkjs": "^3.2.0",
-    "hoist-non-react-statics": "^3.3.2",
-    "message-port-polyfill": "^0.2.0"
+    "hoist-non-react-statics": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.15.0",
