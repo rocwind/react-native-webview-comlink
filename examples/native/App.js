@@ -10,14 +10,19 @@ export default class App extends React.Component {
     // the root obj to be exposed to web
     const rootObj = {
       alert: (title, message, onYes, onNo) => {
+        const withCleanup = (cb) => () => {
+          cb();
+          onYes.release();
+          onNo.release();
+        };
         Alert.alert(title, message, [
           {
             text: 'YES',
-            onPress: onYes,
+            onPress: withCleanup(onYes),
           },
           {
             text: 'NO',
-            onPress: onNo,
+            onPress: withCleanup(onNo),
           },
         ]);
       },
