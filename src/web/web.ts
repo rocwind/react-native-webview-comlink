@@ -1,61 +1,55 @@
-import 'message-port-polyfill';
-import { Endpoint, proxy, ProxyResult, proxyValue } from 'comlinkjs';
-import { wrap } from '../common/messagechanneladapter';
+import './polyfill';
+import { JavascriptInterface, MessageEvent } from './types';
+import { MessageHub } from '../common/MessageHub';
+import { createTransmitter } from '../common/message';
+import { createLogger } from '../common/logger';
 
-/**
- * create a Comlink endpoint
- */
-function createEndpoint(): Endpoint {
-    return wrap({
-        send(data) {
-            (<any>window).ReactNativeWebView.postMessage(data);
-        },
-        addEventListener(type, listener) {
-            if (type !== 'message') {
-                throw Error(`unsupported event type: ${type}`);
-            }
-            // android
-            document.addEventListener(type, listener);
-            // ios
-            window.addEventListener(type, listener);
-        },
-        removeEventListener(type, listener) {
-            if (type !== 'message') {
-                throw Error(`unsupported event type: ${type}`);
-            }
-            // android
-            document.removeEventListener(type, listener);
-            // ios
-            window.addEventListener(type, listener);
-        },
-    });
-}
+// place holders
+declare var $EXPOSED_TARGET: any;
+declare var $LOG_ENABLED: boolean;
 
+const logger = createLogger($LOG_ENABLED);
 /**
- * create Comlink proxy object
+ * create Javascript interface object
  * @param target
  */
-function createComlinkProxy<T>(target: T): ProxyResult<T> {
-    const keys = Object.keys(target);
-    const proxied = proxy(createEndpoint(), target);
-    // auto proxy function arg
-    return keys.reduce((result, key) => {
-        result[key] = (...args) => {
-            return proxied[key].apply(
-                null,
-                args.map((arg) => (typeof arg === 'function' ? proxyValue(arg) : arg)),
-            );
+function createInterface<T>(name: string, target: T, os: string): JavascriptInterface<T> {
+    const hub = new MessageHub(name, window.ReactNativeWebView);
+    let initialized = false;
+    const init = () => {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+        const listener = (evt: MessageEvent) => {
+            const msg = evt.data;
+            if (hub.canHandleMessage(msg)) {
+                logger(`received message from native ${msg}`);
+                hub.handleMessage(msg);
+            }
         };
-        return result;
-    }, {} as ProxyResult<T>);
+
+        if (os === 'android') {
+            document.addEventListener('message', listener);
+        } else if (os === 'ios') {
+            window.addEventListener('message', listener);
+        }
+    };
+
+    return Object.keys(target).reduce((obj, key) => {
+        const transmitter = createTransmitter(key, hub);
+        obj[key] = (...args: unknown[]) => {
+            init();
+            return transmitter(...args);
+        };
+        return obj;
+    }, {} as JavascriptInterface<T>);
 }
 
 /**
  * for native bundle to inject
  */
-declare var $EXPOSED_NAME: any;
-declare var $EXPOSED_TARGET: any;
-if (typeof $EXPOSED_NAME === 'string' && !window[$EXPOSED_NAME]) {
-    console.log('[WebViewComlink] $EXPOSED_NAME injected');
-    window[$EXPOSED_NAME] = createComlinkProxy($EXPOSED_TARGET);
+if (!window['$EXPOSED_NAME']) {
+    logger('"$EXPOSED_NAME" injected');
+    window['$EXPOSED_NAME'] = createInterface('$EXPOSED_NAME', $EXPOSED_TARGET, '$PLATFORM_OS');
 }

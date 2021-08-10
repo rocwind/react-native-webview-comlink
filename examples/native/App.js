@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { withComlinkExpose } from 'react-native-webview-comlink';
+import { withJavascriptInterface } from 'react-native-webview-comlink';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,22 +10,28 @@ export default class App extends React.Component {
     // the root obj to be exposed to web
     const rootObj = {
       alert: (title, message, onYes, onNo) => {
+        const withCleanup = (cb) => () => {
+          cb();
+          onYes.release();
+          onNo.release();
+        };
         Alert.alert(title, message, [
           {
             text: 'YES',
-            onPress: onYes,
+            onPress: withCleanup(onYes),
           },
           {
             text: 'NO',
-            onPress: onNo,
+            onPress: withCleanup(onNo),
           },
         ]);
       },
-      someMethodWithError: () => Promise.reject(new Error('something wrong')),
+      someMethodWithError: () =>
+        Promise.reject(Object.assign(new Error('something wrong'), { code: -1 })),
     };
 
     // create higher-order WebView component
-    this.WebViewComponent = withComlinkExpose(rootObj, 'MyJSInterface', {
+    this.WebViewComponent = withJavascriptInterface(rootObj, 'MyJSInterface', {
       forwardRef: true,
       log: true,
     })(WebView);
@@ -49,6 +55,7 @@ export default class App extends React.Component {
           onLoadEnd={(evt) => {
             console.log('onLoadEnd', evt.nativeEvent.url);
           }}
+          injectedJavaScriptBeforeContentLoaded={`console.log('hello world!');`}
         ></this.WebViewComponent>
       </SafeAreaView>
     );

@@ -5,7 +5,7 @@ export function createLogger(log?: boolean | Logger): Logger {
         return () => {};
     }
 
-    const logger: Logger = typeof log === 'function' ? log : console.log;
+    const logger: Logger = typeof log === 'function' ? log : (msg) => console.log(msg);
     return (msg) => {
         logger(`[WebViewComlink] ${msg}`);
     };
