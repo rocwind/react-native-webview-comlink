@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "clean": "rm -rf lib",
-    "build": "npm run clean && npm run tsc && npm run rollup && node replace-script.js",
+    "build": "npm run clean && npm run tsc && npm run rollup",
     "tsc": "tsc -d",
     "rollup": "rollup --config --compact",
     "release": "npm run build && standard-version && git push --follow-tags origin master && npm publish",
