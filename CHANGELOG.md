@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.4...v0.7.0) (2021-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* - rename `withComlinkExpose()` to `withJavascriptInterface()`
+- message protocol changed so it is no longer compatible with v0.5.x client(web side) code
+* message protocol changed, handled message will not trigger `onMessage` prop anymore
+
+### Features
+
+* rewrite the core messaging part, remove the Comlink dependency. ([aa69b26](https://github.com/rocwind/react-native-webview-comlink/commit/aa69b261c233d1afe36d7b58d3e68c07cfb875a3))
+* support expose mutiple objects to window ([01a6830](https://github.com/rocwind/react-native-webview-comlink/commit/01a683073194f764a96d5a7ed78a94d1ecb0db06))
+
+
+### Bug Fixes
+
+* compatible with Android 5 browser ([2b88f30](https://github.com/rocwind/react-native-webview-comlink/commit/2b88f300864ae656823efe9b70423a3544c917f7))
+
 ### [0.6.4](https://github.com/rocwind/react-native-webview-comlink/compare/v0.6.3...v0.6.4) (2021-08-05)
 
 
