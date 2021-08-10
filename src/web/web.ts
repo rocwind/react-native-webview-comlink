@@ -4,9 +4,7 @@ import { createTransmitter } from '../common/message';
 import { createLogger } from '../common/logger';
 
 // place holders
-declare var $EXPOSED_NAME: string;
 declare var $EXPOSED_TARGET: any;
-declare var $PLATFORM_OS: 'android' | 'ios';
 declare var $LOG_ENABLED: boolean;
 
 const logger = createLogger($LOG_ENABLED);
@@ -14,11 +12,7 @@ const logger = createLogger($LOG_ENABLED);
  * create Javascript interface object
  * @param target
  */
-function createInterface<T>(
-    name: string,
-    target: T,
-    os: 'android' | 'ios',
-): JavascriptInterface<T> {
+function createInterface<T>(name: string, target: T, os: string): JavascriptInterface<T> {
     const hub = new MessageHub(name, window.ReactNativeWebView);
     const listener = (evt: MessageEvent) => {
         const msg = evt.data;
@@ -43,7 +37,7 @@ function createInterface<T>(
 /**
  * for native bundle to inject
  */
-if (typeof $EXPOSED_NAME === 'string' && !window[$EXPOSED_NAME]) {
-    logger('$EXPOSED_NAME injected');
-    window[$EXPOSED_NAME] = createInterface($EXPOSED_NAME, $EXPOSED_TARGET, $PLATFORM_OS);
+if (!window['$EXPOSED_NAME']) {
+    logger('"$EXPOSED_NAME" injected');
+    window['$EXPOSED_NAME'] = createInterface('$EXPOSED_NAME', $EXPOSED_TARGET, '$PLATFORM_OS');
 }

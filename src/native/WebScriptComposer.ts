@@ -6,13 +6,13 @@ export class WebScriptComposer {
     constructor(name: string, exposedObj: any, log: boolean) {
         // assum exposedObj to be an object with function props
         const exposedTarget = `{${Object.keys(exposedObj)
-            .map((key) => `${key}: function(){}`)
+            .map((key) => `${key}:1`)
             .join(',')}}`;
 
         this.targetScript = script
-            .replace(/\$EXPOSED_NAME/g, `"${name}"`)
+            .replace(/\$EXPOSED_NAME/g, name)
             .replace('$EXPOSED_TARGET', exposedTarget)
-            .replace('$PLATFORM_OS', `"${Platform.OS}"`)
+            .replace('$PLATFORM_OS', Platform.OS)
             .replace('$LOG_ENABLED', `${log}`);
     }
 

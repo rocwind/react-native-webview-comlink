@@ -23,7 +23,6 @@ type HubMessage = Message & {
 };
 
 export class MessageHub implements Channel {
-    // private listeners: EventListener[] = [];
     private tag: string;
 
     private receiverByID: Record<string, Function> = {};
