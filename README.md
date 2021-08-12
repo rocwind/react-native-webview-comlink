@@ -12,7 +12,7 @@
 
 ```
 import { WebView } from 'react-native-webview';
-import { withJavascriptInterface } from 'react-native-webview-comlink';
+import { withJavascriptInterface, Remote } from 'react-native-webview-comlink';
 // it's not necessary but recommended to put the interface definition at some common
 // place to share it between native and web projects if you use TypeScript
 import { MyJSInterface } from './common/types';
@@ -23,7 +23,7 @@ const rootObj: MyJSInterface = {
         console.warn('someMethod called');
         return 42;
     },
-    someMethodWithCallbackSupport(cb) {
+    someMethodWithCallbackSupport(cb: Remote<(msg: string) => void>) {
         cb('invoke callback from native');
 
         // release the callback, so it can be garbage collected at the web side.
@@ -84,6 +84,11 @@ There are example [React Native project](examples/native) and [Web project(React
     -   [`isEnabled`] _(Function)_: for gain more control on enable or disable status besides `whitelistURLs`, it gets called in sending and receiving each message, returns `true` to let the message pass, default is `null`
     -   [`forwardRef`] _(Boolean)_: forward ref to the wrapped WebView component, default is `false`
     -   [`log`] _(Boolean)_: print debug log to console, default is `false`
+
+```
+// you may add multiple javascript interface by nest the `withJavascriptInterface` call, e.g. following code adds both `MyAPI` and `MyAPI2` to web page
+withJavascriptInterface(apiObj2, 'MyAPI2')(withJavascriptInterface(apiObj, 'MyAPI')(WebView))
+```
 
 ### Web
 
