@@ -29,17 +29,6 @@ interface Options {
      */
     isEnabled?: isEnabledGetter;
     /**
-     * the interface is injected on load end by default, set to `true`
-     * to get the interface injected on load start
-     * NOTE:
-     * - it only works for Android, iOS will ignore this option as
-     * it's necessary to inject on load end for iOS to work
-     * - if target lower browser version device where it needs polyfills,
-     * it's better to inject on load end where those polyfills are already
-     * loaded with web page
-     */
-    injectOnLoadStart?: boolean;
-    /**
      * print debug log to console or not, default is `false`
      */
     log?: boolean | Logger;
