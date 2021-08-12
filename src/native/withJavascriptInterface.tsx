@@ -86,9 +86,9 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                 this.currentURL = '';
                 this.isCurrentURLInWhitelist = true;
                 this.onURLUpdated(props.source?.uri);
-
-                this.provider = new InterfaceProvider(name, rootObj, this.isEnabled, logger);
-                this.composer = new WebScriptComposer(name, rootObj, !!options?.log);
+                const keys = Object.keys(rootObj);
+                this.provider = new InterfaceProvider(name, rootObj, keys, this.isEnabled, logger);
+                this.composer = new WebScriptComposer(name, keys, !!options?.log);
             }
 
             isEnabled = (): boolean => {

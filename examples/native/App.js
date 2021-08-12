@@ -40,9 +40,11 @@ export default class App extends React.Component {
   }
 
   render() {
-    const uri = 'http://localhost:3000';
-    // localhost works for ios simulator, for other case please use host address
+    // localhost works for ios simulator and
+    // android device with port forwarding by `adb reverse tcp:3000 tcp:3000`
+    // you can also use your host ip address by editting `uri`
     // const uri = 'http://<you host ip address>:3000';
+    const uri = 'http://localhost:3000';
     return (
       <SafeAreaView style={styles.container}>
         <this.WebViewComponent

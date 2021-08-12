@@ -11,16 +11,17 @@ export class InterfaceProvider {
     constructor(
         name: string,
         rootObj: any,
+        rootObjKeys: string[],
         private isEnabled: isEnabledGetter,
         private logger: Logger,
     ) {
-        this.hub = new MessageHub(name, this);
-        Object.keys(rootObj).forEach((key) => {
+        this.hub = new MessageHub(name, this, logger);
+        rootObjKeys.forEach((key, index) => {
             const property: unknown = rootObj[key];
             if (typeof property !== 'function') {
                 return;
             }
-            this.hub.registerReceiver(key, (...args: unknown[]) => {
+            this.hub.registerLocalFunction(-(index + 1), 0, (...args: unknown[]) => {
                 return property.apply(rootObj, args);
             });
         });

@@ -3,10 +3,9 @@ import { script } from './script';
 
 export class WebScriptComposer {
     private targetScript: string;
-    constructor(name: string, exposedObj: any, log: boolean) {
-        // assum exposedObj to be an object with function props
-        const exposedTarget = `{${Object.keys(exposedObj)
-            .map((key) => `${key}:1`)
+    constructor(name: string, rootObjKeys: string[], log: boolean) {
+        const exposedTarget = `{${rootObjKeys
+            .map((key, index) => `${key}:-${index + 1}`)
             .join(',')}}`;
 
         this.targetScript = script

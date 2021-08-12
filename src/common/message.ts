@@ -1,64 +1,93 @@
-import { generateUUID } from './uuid';
+import { generateID } from './utils';
 
-// receiver transmitter
 export const enum WireValueType {
-    RAW = 'RAW',
-    PROXY = 'PROXY',
-    THROW = 'THROW',
+    RAW = 'R',
+    PROXY = 'P',
+    THROW = 'T',
 }
 
-export interface WireValue {
-    type: WireValueType;
-    value: unknown;
+interface RawWireValue {
+    type: WireValueType.RAW;
+    val: unknown;
 }
+
+interface ThrowWireValue {
+    type: WireValueType.THROW;
+    val: unknown;
+}
+
+interface ProxyWireValue {
+    type: WireValueType.PROXY;
+    id: number;
+    /**
+     * vid (version id) is the version of the proxy.
+     * it is used to detect if the proxy is being send to remote
+     * and local function cannot be released.
+     */
+    vid: number;
+}
+
+export type WireValue = RawWireValue | ThrowWireValue | ProxyWireValue;
 
 export const enum MessageType {
-    REQUEST = 'REQUEST',
-    RESPONSE = 'RESPONSE',
-    RELEASE = 'RELEASE',
+    REQUEST = 'REQ',
+    RESPONSE = 'RSP',
+    RELEASE = 'RLS',
 }
-
 export interface RequestMessage {
     type: MessageType.REQUEST;
-    target: string;
-    argumentList: WireValue[];
+    id: number;
+    rid: number;
+    args: WireValue[];
 }
-
 export interface ResponseMessage {
     type: MessageType.RESPONSE;
-    returnValue?: WireValue;
+    rid: number;
+    ret?: WireValue;
 }
 
-interface ReleaseMessage {
+export interface ReleaseMessage {
     type: MessageType.RELEASE;
-    target: string;
+    id: number;
+    vid: number;
 }
 
 export type Message = RequestMessage | ResponseMessage | ReleaseMessage;
 
-export type WithRelease<T> = T & {
-    release(): void;
+export type Remote<T> = T & {
+    release(): number;
 };
 
-export type Transmitter = WithRelease<Function>;
+export type RemoteFunction = Remote<Function> & {
+    addRef(vid: number): number;
+    cleanup(): void;
+};
 
-//
+// Channel that handle messages
 export interface Channel {
-    sendMessage(msg: Message): void;
-    requestResponse(msg: Message): Promise<WireValue>;
-    registerReceiver(id: string, receiver: Function): void;
-    registerTransmitter(transmitter: Transmitter): void;
+    notifyRelease(msg: ReleaseMessage): void;
+    requestResponse(msg: RequestMessage): Promise<WireValue>;
+    registerLocalFunction(id: number, vid: number, localFunction: Function): void;
+    tryGetLocalFuntionID(localFunction: Function): number;
+    registerRemoteFunction(id: number, remoteFunction: RemoteFunction): void;
+    unregisterRemoteFunction(id: number): void;
+    tryGetRemoteFunction(id: number): RemoteFunction;
 }
 
 export function toWireValue(value: unknown, channel: Channel): WireValue {
     // proxy function
     if (typeof value === 'function') {
-        const id = generateUUID();
-        channel.registerReceiver(id, value);
+        let id = channel.tryGetLocalFuntionID(value);
+        if (!id) {
+            id = generateID();
+        }
+        const vid = generateID();
+        channel.registerLocalFunction(id, vid, value);
 
         return {
             type: WireValueType.PROXY,
-            value: id,
+            id,
+            vid,
         };
     }
 
@@ -66,7 +95,7 @@ export function toWireValue(value: unknown, channel: Channel): WireValue {
         const { message, name, stack, ...rest } = value;
         return {
             type: WireValueType.RAW,
-            value: {
+            val: {
                 message,
                 ...rest,
             },
@@ -76,35 +105,56 @@ export function toWireValue(value: unknown, channel: Channel): WireValue {
     // raw value
     return {
         type: WireValueType.RAW,
-        value,
+        val: value,
     };
 }
 
 export function fromWireValue(value: WireValue, channel: Channel): unknown {
     switch (value.type) {
         case WireValueType.RAW:
-            return value.value;
+            return value.val;
         case WireValueType.PROXY:
-            const transmitter = createTransmitter(value.value as string, channel);
-            channel.registerTransmitter(transmitter);
-            return transmitter;
+            const { id, vid } = value;
+            let remoteFunction = channel.tryGetRemoteFunction(id);
+            if (remoteFunction) {
+                remoteFunction.addRef(vid);
+            } else {
+                remoteFunction = createRemoteFunction(id, vid, channel);
+                channel.registerRemoteFunction(id, remoteFunction);
+            }
+            return remoteFunction;
         case WireValueType.THROW:
-            const { message, ...rest } = value.value as { message?: string };
+            const { message, ...rest } = value.val as { message?: string };
             return Object.assign(new Error(message), rest);
         default:
             return undefined;
     }
 }
 
-export function createTransmitter(id: string, channel: Channel): Transmitter {
-    let hasReleased = false;
+export function createRemoteFunction(id: number, vid: number, channel: Channel): RemoteFunction {
+    let refCount = 1;
+    let latestVid = vid;
+    const cleanup = () => {
+        if (refCount <= 0) {
+            return;
+        }
+
+        refCount = 0;
+        channel.unregisterRemoteFunction(id);
+        channel.notifyRelease({
+            type: MessageType.RELEASE,
+            id,
+            vid: latestVid,
+        });
+    };
     return Object.assign(
         (...args: unknown[]) => {
             return channel
                 .requestResponse({
                     type: MessageType.REQUEST,
-                    target: id,
-                    argumentList: args.map((arg) => toWireValue(arg, channel)),
+                    id,
+                    rid: generateID(),
+                    args: args.map((arg) => toWireValue(arg, channel)),
                 })
                 .then((response) => {
                     if (!response) {
@@ -119,16 +169,27 @@ export function createTransmitter(id: string, channel: Channel): Transmitter {
                 });
         },
         {
-            release: () => {
-                if (hasReleased) {
-                    return;
+            addRef: (vid) => {
+                if (refCount <= 0) {
+                    return 0;
                 }
-                hasReleased = true;
-                channel.sendMessage({
-                    type: MessageType.RELEASE,
-                    target: id,
-                });
+                latestVid = vid;
+                refCount += 1;
+                return refCount;
             },
+            release: () => {
+                if (refCount <= 0) {
+                    return 0;
+                }
+                if (refCount === 1) {
+                    cleanup();
+                    return refCount;
+                }
+
+                refCount -= 1;
+                return refCount;
+            },
+            cleanup,
         },
     );
 }

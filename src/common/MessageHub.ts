@@ -6,74 +6,106 @@ import {
     fromWireValue,
     toWireValue,
     WireValueType,
-    Transmitter,
+    RemoteFunction,
+    RequestMessage,
+    ReleaseMessage,
 } from './message';
-import { generateUUID } from './uuid';
+import { ArrayMap, FakeWeakRef, WeakRefType } from './utils';
+import { Logger } from './logger';
 
 export interface Endpoint {
     postMessage(msg: string): void;
 }
 
-interface ResolveRef {
-    current?: Function;
-}
-
-type HubMessage = Message & {
-    id: string;
-};
-
 export class MessageHub implements Channel {
     private tag: string;
 
-    private receiverByID: Record<string, Function> = {};
+    private localFunctionByID: Record<
+        number,
+        {
+            localFunction: Function;
+            vid: number;
+        }
+    > = {};
+    private localFunctionIDByFunction =
+        typeof Map !== 'undefined' ? new Map<Function, number>() : new ArrayMap<Function, number>();
 
-    private resolveRefByRequestID: Record<string, ResolveRef> = {};
+    private resolveByRequestID: Record<number, Function> = {};
 
-    private registry: FinalizationRegistry<() => void>;
+    private remoteFunctionRefByID: Record<number, WeakRefType<RemoteFunction>> = {};
+    private remoteFunctionRegistry: FinalizationRegistry<() => void>;
 
-    constructor(name: string, private endpoint: Endpoint) {
+    constructor(name: string, private endpoint: Endpoint, private logger: Logger) {
         this.tag = `RNWC|${name}|`;
 
         if (typeof FinalizationRegistry !== 'undefined') {
-            this.registry = new FinalizationRegistry((release) => {
-                release();
+            this.remoteFunctionRegistry = new FinalizationRegistry((cleanup) => {
+                cleanup();
             });
         }
     }
 
-    sendMessage(msg: Message, id: string = ''): void {
-        this.endpoint.postMessage(
-            this.tag +
-                JSON.stringify({
-                    ...msg,
-                    id,
-                }),
-        );
+    private sendMessage(msg: Message): void {
+        this.endpoint.postMessage(this.tag + JSON.stringify(msg));
     }
 
-    requestResponse(msg: Message): Promise<WireValue> {
-        let resolveRef = {
-            current: undefined,
-        };
-        const result = new Promise<WireValue>((resolve) => {
-            resolveRef.current = resolve;
+    notifyRelease(msg: ReleaseMessage): void {
+        this.sendMessage(msg);
+    }
+
+    requestResponse(msg: RequestMessage): Promise<WireValue> {
+        return new Promise<WireValue>((resolve) => {
+            this.resolveByRequestID[msg.rid] = resolve;
+            this.sendMessage(msg);
         });
-
-        const id = generateUUID();
-        this.resolveRefByRequestID[id] = resolveRef;
-
-        this.sendMessage(msg, id);
-        return result;
     }
 
-    registerReceiver(id: string, receiver: Function): void {
-        this.receiverByID[id] = receiver;
-    }
-
-    registerTransmitter(transmitter: Transmitter): void {
-        if (this.registry) {
-            this.registry.register(transmitter, transmitter.release);
+    registerLocalFunction(id: number, vid: number, localFunction: Function): void {
+        if (this.localFunctionByID.hasOwnProperty(id)) {
+            // update only the vid if the function is already registered
+            this.localFunctionByID[id].vid = vid;
+            return;
         }
+
+        this.localFunctionByID[id] = {
+            localFunction,
+            vid,
+        };
+        this.localFunctionIDByFunction.set(localFunction, id);
+    }
+
+    tryGetLocalFuntionID(localFunction: Function): number {
+        return this.localFunctionIDByFunction.get(localFunction);
+    }
+
+    registerRemoteFunction(id: number, remoteFunction: RemoteFunction): void {
+        this.remoteFunctionRefByID[id] =
+            typeof WeakRef !== 'undefined'
+                ? new WeakRef(remoteFunction)
+                : new FakeWeakRef(remoteFunction);
+
+        if (this.remoteFunctionRegistry) {
+            this.remoteFunctionRegistry.register(
+                remoteFunction,
+                remoteFunction.cleanup,
+                remoteFunction,
+            );
+        }
+    }
+
+    unregisterRemoteFunction(id: number): void {
+        const remoteFunction = this.tryGetRemoteFunction(id);
+        if (!remoteFunction) {
+            return;
+        }
+        delete this.remoteFunctionRefByID[id];
+        if (this.remoteFunctionRegistry) {
+            this.remoteFunctionRegistry.unregister(remoteFunction);
+        }
+    }
+
+    tryGetRemoteFunction(id: number): RemoteFunction {
+        return this.remoteFunctionRefByID[id]?.deref();
     }
 
     canHandleMessage(msg: string): boolean {
@@ -81,61 +113,63 @@ export class MessageHub implements Channel {
     }
 
     handleMessage(msg: string): void {
-        const data: HubMessage = JSON.parse(msg.substr(this.tag.length));
+        const data: Message = JSON.parse(msg.substr(this.tag.length));
         switch (data.type) {
             case MessageType.REQUEST: {
-                const { target, argumentList, id } = data;
+                const { id, args, rid } = data;
                 Promise.resolve()
                     .then(() => {
-                        const receiver = this.receiverByID[target];
-                        if (!receiver) {
-                            throw new Error(`failed to invoke, ${target} is missing`);
+                        const localFunction = this.localFunctionByID[id]?.localFunction;
+                        if (!localFunction) {
+                            throw new Error(`failed to invoke function, ${id} is missing`);
                         }
-                        return receiver.apply(
+                        return localFunction.apply(
                             null,
-                            argumentList.map((arg) => fromWireValue(arg, this)),
+                            args.map((arg) => fromWireValue(arg, this)),
                         );
                     })
                     .then((value) => {
-                        this.sendMessage(
-                            {
-                                type: MessageType.RESPONSE,
-                                returnValue: toWireValue(value, this),
-                            },
-                            id,
-                        );
+                        this.sendMessage({
+                            type: MessageType.RESPONSE,
+                            ret: toWireValue(value, this),
+                            rid,
+                        });
                     })
                     .catch((error) => {
                         const wireValue = toWireValue(error, this);
                         wireValue.type = WireValueType.THROW;
-                        this.sendMessage(
-                            {
-                                type: MessageType.RESPONSE,
-                                returnValue: wireValue,
-                            },
-                            id,
-                        );
+                        this.sendMessage({
+                            type: MessageType.RESPONSE,
+                            ret: wireValue,
+                            rid,
+                        });
                     });
                 break;
             }
+
             case MessageType.RESPONSE: {
-                const { id, returnValue } = data;
-                const resolveRef = this.resolveRefByRequestID[id];
-                if (!resolveRef) {
+                const { rid, ret } = data;
+                const resolve = this.resolveByRequestID[rid];
+                if (!resolve) {
                     return;
                 }
-                delete this.resolveRefByRequestID[id];
-                resolveRef.current?.(returnValue);
+                delete this.resolveByRequestID[rid];
+                resolve(ret);
                 break;
             }
 
             case MessageType.RELEASE: {
-                const { target } = data;
-                if (this.receiverByID.hasOwnProperty(target)) {
-                    delete this.receiverByID[target];
+                const { id, vid } = data;
+                if (vid === this.localFunctionByID[id]?.vid) {
+                    this.logger(`release local function: ${id}`);
+                    this.localFunctionIDByFunction.delete(this.localFunctionByID[id].localFunction);
+                    delete this.localFunctionByID[id];
+                } else {
+                    this.logger(`not release local function: ${id}, ${vid}`);
                 }
                 break;
             }
+
             default:
                 break;
         }

@@ -1,7 +1,7 @@
 import './polyfill';
 import { JavascriptInterface, MessageEvent } from './types';
 import { MessageHub } from '../common/MessageHub';
-import { createTransmitter } from '../common/message';
+import { createRemoteFunction } from '../common/message';
 import { createLogger } from '../common/logger';
 
 // place holders
@@ -14,7 +14,7 @@ const logger = createLogger($LOG_ENABLED);
  * @param target
  */
 function createInterface<T>(name: string, target: T, os: string): JavascriptInterface<T> {
-    const hub = new MessageHub(name, window.ReactNativeWebView);
+    const hub = new MessageHub(name, window.ReactNativeWebView, logger);
     let initialized = false;
     const init = () => {
         if (initialized) {
@@ -37,10 +37,10 @@ function createInterface<T>(name: string, target: T, os: string): JavascriptInte
     };
 
     return Object.keys(target).reduce((obj, key) => {
-        const transmitter = createTransmitter(key, hub);
+        const remoteFunction = createRemoteFunction(target[key], 0, hub);
         obj[key] = (...args: unknown[]) => {
             init();
-            return transmitter(...args);
+            return remoteFunction(...args);
         };
         return obj;
     }, {} as JavascriptInterface<T>);

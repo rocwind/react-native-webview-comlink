@@ -26,11 +26,16 @@ const rootObj: MyJSInterface = {
     someMethodWithCallbackSupport(cb) {
         cb('invoke callback from native');
 
-        // release the callback, so it can be garbage collected at the web side
-        // this can be safely ignored if FinalizationRegistry is supported at
+        // release the callback, so it can be garbage collected at the web side.
+        // callbacks maintain reference count inside, each time we got a callback instance
+        // from the method argument, there should be a corresponding release() call when it
+        // is no longer needed.
+        // this can be safely skipped if FinalizationRegistry and WeakRef is supported at
         // native Javascript runtime.
-        // JavaScriptCore supports it while Hermes does not yet:
-        // https://github.com/facebook/hermes/blob/main/utils/testsuite/testsuite_skiplist.py#L1880
+        // however, since GC timing is unpredictable, it's still recommended to handle the
+        // release() manually to get a lower memory footprint at the web side. (and avoids
+        // possible lagging if lots of proxied method being cleaned up during GC - which causes
+        // the same amount of messages being sent to web side)
         cb.release();
     },
 };
