@@ -1,4 +1,5 @@
 import React, { ComponentType, Component, forwardRef } from 'react';
+import { Platform } from 'react-native';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import {
     WebView,
@@ -63,6 +64,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
             private composer: WebScriptComposer;
             private isCurrentURLInWhitelist: boolean;
             private currentURL: string;
+            private webView: WebView;
 
             static displayName: string = `withJavascriptInterface(${name})(${
                 WrappedComponent.displayName || WrappedComponent.name || 'Component'
@@ -91,6 +93,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
             };
 
             setWebViewRef = (ref: WebView) => {
+                this.webView = ref;
                 this.provider.setWebview(ref);
 
                 const { forwardedRef } = this.props;
@@ -108,6 +111,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                 if (handled) {
                     return;
                 }
+
                 // delegate to event handler
                 this.props.onMessage?.(event);
             };
@@ -118,6 +122,18 @@ export function withJavascriptInterface<Props extends WebViewProps>(
 
                 // delegate to event handler
                 this.props.onNavigationStateChange?.(event);
+            };
+
+            onLoadStart = (event: Parameters<WebViewProps['onLoadStart']>[0]) => {
+                if (Platform.OS === 'android') {
+                    // to workaround the issue that load script on some Android device may have issue
+                    // https://github.com/react-native-webview/react-native-webview/pull/1099
+                    // https://github.com/react-native-webview/react-native-webview/issues/1609
+                    this.webView.injectJavaScript(this.composer.getScriptToInject());
+                }
+
+                // delegate to event handler
+                this.props.onLoadStart?.(event);
             };
 
             private onURLUpdated(url: string): void {
@@ -143,6 +159,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                         ref={this.setWebViewRef}
                         onMessage={this.onMessage}
                         onNavigationStateChange={this.onNavigationStateChange}
+                        onLoadStart={this.onLoadStart}
                         injectedJavaScriptBeforeContentLoaded={this.composer.getScriptToInject(
                             this.props.injectedJavaScriptBeforeContentLoaded,
                         )}
