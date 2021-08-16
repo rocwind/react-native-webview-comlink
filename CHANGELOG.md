@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.2](https://github.com/rocwind/react-native-webview-comlink/compare/v0.7.1...v0.7.2) (2021-08-16)
+
+
+### Bug Fixes
+
+* remove the deprecated `injectOnLoadStart` option ([8294b10](https://github.com/rocwind/react-native-webview-comlink/commit/8294b10036a81c7f1740ef430f7eed568aa3878d))
+* try to workaround js inject issue on some Android devices ([b69699f](https://github.com/rocwind/react-native-webview-comlink/commit/b69699fc6452e2df6c5554aa800aa9bf741546e5))
+
 ### [0.7.1](https://github.com/rocwind/react-native-webview-comlink/compare/v0.7.0...v0.7.1) (2021-08-12)
 
 
