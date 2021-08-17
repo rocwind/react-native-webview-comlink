@@ -63,6 +63,12 @@ export function withJavascriptInterface<Props extends WebViewProps>(
             private provider: InterfaceProvider;
             private composer: WebScriptComposer;
             private isCurrentURLInWhitelist: boolean;
+            // to workaround the issue that on some Android device load script on page start
+            // may get cleared after page starting load, we try to inject js on both load start
+            // and first progress event
+            // https://github.com/react-native-webview/react-native-webview/pull/1099
+            // https://github.com/react-native-webview/react-native-webview/issues/1609
+            private isJSInjectedInProgress: boolean;
             private currentURL: string;
             private webView: WebView;
 
@@ -76,6 +82,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
 
                 this.currentURL = '';
                 this.isCurrentURLInWhitelist = true;
+                this.isJSInjectedInProgress = true;
                 this.onURLUpdated(props.source?.uri);
                 const keys = Object.keys(rootObj);
                 this.provider = new InterfaceProvider(name, rootObj, keys, this.isEnabled, logger);
@@ -125,15 +132,22 @@ export function withJavascriptInterface<Props extends WebViewProps>(
             };
 
             onLoadStart = (event: Parameters<WebViewProps['onLoadStart']>[0]) => {
-                if (Platform.OS === 'android') {
-                    // to workaround the issue that load script on some Android device may have issue
-                    // https://github.com/react-native-webview/react-native-webview/pull/1099
-                    // https://github.com/react-native-webview/react-native-webview/issues/1609
-                    this.webView.injectJavaScript(this.composer.getScriptToInject());
-                }
+                const { url } = event.nativeEvent;
+                this.onURLUpdated(url);
+                this.injectJavascriptForAndroid();
+                this.isJSInjectedInProgress = false;
 
                 // delegate to event handler
                 this.props.onLoadStart?.(event);
+            };
+
+            onLoadProgress = (event: Parameters<WebViewProps['onLoadProgress']>[0]) => {
+                if (!this.isJSInjectedInProgress) {
+                    this.isJSInjectedInProgress = true;
+                    this.injectJavascriptForAndroid();
+                }
+                // delegate to event handler
+                this.props.onLoadProgress?.(event);
             };
 
             private onURLUpdated(url: string): void {
@@ -152,6 +166,13 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                 }
             }
 
+            private injectJavascriptForAndroid(): void {
+                if (Platform.OS !== 'android' || !this.isCurrentURLInWhitelist || !this.webView) {
+                    return;
+                }
+                this.webView.injectJavaScript(this.composer.getScriptToInject());
+            }
+
             render() {
                 return (
                     <WrappedComponent
@@ -160,6 +181,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                         onMessage={this.onMessage}
                         onNavigationStateChange={this.onNavigationStateChange}
                         onLoadStart={this.onLoadStart}
+                        onLoadProgress={this.onLoadProgress}
                         injectedJavaScriptBeforeContentLoaded={this.composer.getScriptToInject(
                             this.props.injectedJavaScriptBeforeContentLoaded,
                         )}
