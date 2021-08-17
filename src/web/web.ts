@@ -8,12 +8,14 @@ import { createLogger } from '../common/logger';
 declare var $EXPOSED_TARGET: any;
 declare var $LOG_ENABLED: boolean;
 
-const logger = createLogger($LOG_ENABLED);
 /**
  * create Javascript interface object
  * @param target
  */
 function createInterface<T>(name: string, target: T, os: string): JavascriptInterface<T> {
+    const logger = createLogger($LOG_ENABLED);
+    logger(`${name} injected`);
+
     const hub = new MessageHub(name, window.ReactNativeWebView, logger);
     let initialized = false;
     const init = () => {
@@ -50,6 +52,5 @@ function createInterface<T>(name: string, target: T, os: string): JavascriptInte
  * for native bundle to inject
  */
 if (!window['$EXPOSED_NAME']) {
-    logger('"$EXPOSED_NAME" injected');
     window['$EXPOSED_NAME'] = createInterface('$EXPOSED_NAME', $EXPOSED_TARGET, '$PLATFORM_OS');
 }

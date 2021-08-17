@@ -11,6 +11,13 @@ import { InterfaceProvider, isEnabledGetter } from './InterfaceProvider';
 import { Logger, createLogger } from '../common/logger';
 import { WebScriptComposer } from './WebScriptComposer';
 
+// to workaround the issue that on some Android device load script on page start
+// may get cleared after page starting load, we try to inject js on both load start
+// and progress events, the max inject js times is defined here
+// https://github.com/react-native-webview/react-native-webview/pull/1099
+// https://github.com/react-native-webview/react-native-webview/issues/1609
+const maxInjectJSTimes = 10;
+
 type HigherOrderComponentCreator<Props> = (component: ComponentType<Props>) => ComponentType<Props>;
 
 /**
@@ -63,12 +70,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
             private provider: InterfaceProvider;
             private composer: WebScriptComposer;
             private isCurrentURLInWhitelist: boolean;
-            // to workaround the issue that on some Android device load script on page start
-            // may get cleared after page starting load, we try to inject js on both load start
-            // and first progress event
-            // https://github.com/react-native-webview/react-native-webview/pull/1099
-            // https://github.com/react-native-webview/react-native-webview/issues/1609
-            private isJSInjectedInProgress: boolean;
+            private injectJSTimes: number;
             private currentURL: string;
             private webView: WebView;
 
@@ -82,7 +84,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
 
                 this.currentURL = '';
                 this.isCurrentURLInWhitelist = true;
-                this.isJSInjectedInProgress = true;
+                this.injectJSTimes = maxInjectJSTimes;
                 this.onURLUpdated(props.source?.uri);
                 const keys = Object.keys(rootObj);
                 this.provider = new InterfaceProvider(name, rootObj, keys, this.isEnabled, logger);
@@ -135,16 +137,16 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                 const { url } = event.nativeEvent;
                 this.onURLUpdated(url);
                 this.injectJavascriptForAndroid();
-                this.isJSInjectedInProgress = false;
+                this.injectJSTimes = 1;
 
                 // delegate to event handler
                 this.props.onLoadStart?.(event);
             };
 
             onLoadProgress = (event: Parameters<WebViewProps['onLoadProgress']>[0]) => {
-                if (!this.isJSInjectedInProgress) {
-                    this.isJSInjectedInProgress = true;
+                if (this.injectJSTimes < maxInjectJSTimes) {
                     this.injectJavascriptForAndroid();
+                    this.injectJSTimes += 1;
                 }
                 // delegate to event handler
                 this.props.onLoadProgress?.(event);
