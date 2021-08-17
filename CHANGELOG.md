@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.3](https://github.com/rocwind/react-native-webview-comlink/compare/v0.7.2...v0.7.3) (2021-08-17)
+
+
+### Bug Fixes
+
+* try to workaround js inject issue on some Android devices by adding inject call on progress event ([e92626a](https://github.com/rocwind/react-native-webview-comlink/commit/e92626a8d565dcb5f4b0682ee4fe76d8cb986308))
+
 ### [0.7.2](https://github.com/rocwind/react-native-webview-comlink/compare/v0.7.1...v0.7.2) (2021-08-16)
 
 
