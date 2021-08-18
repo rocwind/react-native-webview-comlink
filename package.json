@@ -55,7 +55,7 @@
     "concurrently": "6.2.1",
     "jest": "27.0.6",
     "metro-react-native-babel-preset": "0.66.2",
-    "msf-cli": "1.2.2",
+    "msf-cli": "1.2.3",
     "react": "17.0.1",
     "react-native": "0.65.0",
     "react-native-webview": "11.13.0",
