@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.5](https://github.com/rocwind/react-native-webview-comlink/compare/v0.7.4...v0.7.5) (2021-09-24)
+
+
+### Bug Fixes
+
+* move dom type definitions to d.ts to avoid conflicts with ts dom lib referenced in web projects ([76fa271](https://github.com/rocwind/react-native-webview-comlink/commit/76fa271e160c334c000cb72e525a48c2dee00af9))
+
 ### [0.7.4](https://github.com/rocwind/react-native-webview-comlink/compare/v0.7.3...v0.7.4) (2021-08-17)
 
 

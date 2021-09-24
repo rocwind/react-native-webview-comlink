@@ -1,6 +1,6 @@
 {
   "name": "react-native-webview-comlink",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Add JavaScript interface for react-native-webview, based on Comlink",
   "main": "lib/index.js",
   "files": [
