@@ -11,31 +11,6 @@ export type JavascriptInterface<T> = {
         : never;
 };
 
-// simplified DOM standard interface
-interface Event {}
-
-export interface EventListener {
-    (evt: Event): void;
-}
-
-interface EventTarget {
-    addEventListener(type: string, listener: EventListener): void;
-    removeEventListener(type: string, listener: EventListener): void;
-}
-
-interface Window extends EventTarget {
-    // injected by React Native WebView
-    ReactNativeWebView: {
-        postMessage(message: string): void;
-    };
-}
-interface Document extends EventTarget {}
-
-declare global {
-    var window: Window & typeof globalThis;
-    var document: Document;
-}
-
 export interface MessageEvent {
     data: string;
 }
