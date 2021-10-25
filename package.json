@@ -51,7 +51,7 @@
     "@types/hoist-non-react-statics": "3.3.1",
     "@types/jest": "27.0.2",
     "@types/react": "17.0.32",
-    "@types/react-native": "0.66.0",
+    "@types/react-native": "0.66.1",
     "concurrently": "6.3.0",
     "jest": "27.3.1",
     "metro-react-native-babel-preset": "0.66.2",
