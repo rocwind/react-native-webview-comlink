@@ -57,7 +57,7 @@
     "metro-react-native-babel-preset": "0.66.2",
     "msf-cli": "1.2.3",
     "react": "17.0.1",
-    "react-native": "0.66.3",
+    "react-native": "0.66.4",
     "react-native-webview": "11.15.0",
     "rollup": "2.61.0",
     "rollup-plugin-cleanup": "3.2.1",
