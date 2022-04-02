@@ -52,7 +52,7 @@
     "@types/jest": "27.4.1",
     "@types/react": "17.0.43",
     "@types/react-native": "0.67.3",
-    "concurrently": "7.0.0",
+    "concurrently": "7.1.0",
     "jest": "27.5.1",
     "metro-react-native-babel-preset": "0.70.0",
     "msf-cli": "1.2.5",
