@@ -54,7 +54,7 @@
     "@types/react-native": "0.67.8",
     "concurrently": "7.2.1",
     "jest": "28.1.1",
-    "metro-react-native-babel-preset": "0.71.0",
+    "metro-react-native-babel-preset": "0.71.1",
     "msf-cli": "1.2.5",
     "react": "17.0.1",
     "react-native": "0.68.2",
