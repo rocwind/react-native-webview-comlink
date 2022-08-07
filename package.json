@@ -50,7 +50,7 @@
     "@rollup/plugin-node-resolve": "13.3.0",
     "@types/hoist-non-react-statics": "3.3.1",
     "@types/jest": "28.1.6",
-    "@types/react": "18.0.15",
+    "@types/react": "18.0.16",
     "@types/react-native": "0.69.5",
     "concurrently": "7.3.0",
     "jest": "28.1.3",
