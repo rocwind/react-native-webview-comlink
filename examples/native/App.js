@@ -1,14 +1,21 @@
+import { types } from '@babel/core';
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { withJavascriptInterface } from 'react-native-webview-comlink';
 
+
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
 
+    
+
     // the root obj to be exposed to web
     const rootObj = {
+
+
       alert: (title, message, onYes, onNo) => {
         const withCleanup = (cb) => () => {
           cb();
@@ -44,7 +51,8 @@ export default class App extends React.Component {
     // android device with port forwarding by `adb reverse tcp:3000 tcp:3000`
     // you can also use your host ip address by editting `uri`
     // const uri = 'http://<you host ip address>:3000';
-    const uri = 'http://localhost:3000';
+    //const uri = 'http://localhost:3000';
+    const uri = 'https://638082b614b0af602674e1bf--capable-lollipop-05625d.netlify.app/';
     return (
       <SafeAreaView style={styles.container}>
         <this.WebViewComponent
