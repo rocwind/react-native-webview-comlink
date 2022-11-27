@@ -2,20 +2,14 @@ import { types } from '@babel/core';
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { withJavascriptInterface } from 'react-native-webview-comlink';
-
-
+import { withJavascriptInterface, TestEvent } from 'react-native-webview-comlink';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    
-
     // the root obj to be exposed to web
     const rootObj = {
-
-
       alert: (title, message, onYes, onNo) => {
         const withCleanup = (cb) => () => {
           cb();
