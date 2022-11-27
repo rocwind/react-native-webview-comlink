@@ -5,7 +5,8 @@
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^4.0.3",
+    "react-native-webview-comlink": "../../src"
   },
   "scripts": {
     "start": "react-scripts start",

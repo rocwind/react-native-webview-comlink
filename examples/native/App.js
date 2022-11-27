@@ -2,11 +2,19 @@ import { types } from '@babel/core';
 import React from 'react';
 import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { withJavascriptInterface, TestEvent } from 'react-native-webview-comlink';
+import { withJavascriptInterface, CoreJSInterface } from 'react-native-webview-comlink';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+
+
+    const jsInterface = {
+        webToMobile(event) {
+          console.log("event ::"+event);
+      }
+
+    }
 
     // the root obj to be exposed to web
     const rootObj = {
@@ -32,7 +40,7 @@ export default class App extends React.Component {
     };
 
     // create higher-order WebView component
-    this.WebViewComponent = withJavascriptInterface(rootObj, 'MyJSInterface', {
+    this.WebViewComponent = withJavascriptInterface(jsInterface, 'CoreJSInterface', {
       forwardRef: true,
       log: true,
     })(WebView);
@@ -45,8 +53,8 @@ export default class App extends React.Component {
     // android device with port forwarding by `adb reverse tcp:3000 tcp:3000`
     // you can also use your host ip address by editting `uri`
     // const uri = 'http://<you host ip address>:3000';
-    //const uri = 'http://localhost:3000';
-    const uri = 'https://638082b614b0af602674e1bf--capable-lollipop-05625d.netlify.app/';
+    const uri = 'http://localhost:3000';
+    //const uri = 'https://638082b614b0af602674e1bf--capable-lollipop-05625d.netlify.app/';
     return (
       <SafeAreaView style={styles.container}>
         <this.WebViewComponent

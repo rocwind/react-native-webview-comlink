@@ -1,6 +1,6 @@
+// export interface CoreJSInterface {
 export interface CoreJSInterface {
     webToMobile(event: string) : Promise<any>;
-    webToMobile(event: string): void;
 }
 
 export interface Event {

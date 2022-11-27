@@ -8,6 +8,8 @@ export class WebScriptComposer {
             .map((key, index) => `${key}:-${index + 1}`)
             .join(',')}}`;
 
+            console.log("exposedTarget  ::"+ exposedTarget)
+
         this.targetScript = script
             .replace(/\$EXPOSED_NAME/g, name)
             .replace('$EXPOSED_TARGET', exposedTarget)

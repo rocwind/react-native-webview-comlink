@@ -10,20 +10,21 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rpcStatus: window.MyJSInterface ? 'ready' : 'failed',
+      rpcStatus: window.CoreJSInterface ? 'ready' : 'failed',
       userSelected: 'not started',
     };
     console.log('app constructor');
   }
 
   handleClick = () => {
-    window.MyJSInterface.alert(
-      'Web',
-      'Called by web page, please select',
-      // callbacks can be handled
-      () => this.setState({ userSelected: 'YES' }),
-      () => this.setState({ userSelected: 'NO' }),
-    );
+    window.CoreJSInterface.webToMobile("Testing My Event");
+    // window.MyJSInterface.alert(
+    //   'Web',
+    //   'Called by web page, please select',
+    //   // callbacks can be handled
+    //   () => this.setState({ userSelected: 'YES' }),
+    //   () => this.setState({ userSelected: 'NO' }),
+    // );
   };
 
   render() {
@@ -45,8 +46,10 @@ class App extends Component {
               // errors in native can be handled
               const perf = window.performance ? performance : Date;
               const start = perf.now();
-              window.MyJSInterface.someMethodWithError().catch((err) =>
-                alert(`${err.message} [${err.code}]\nperf: ${(perf.now() - start).toFixed(2)}`),
+              console.log("perf now: "+start)
+              window.CoreJSInterface.someMethodWithError().catch((err) =>
+              console.log("someMethodWithError is invalid ")
+                //alert(`${err.message} [${err.code}]\nperf: ${(perf.now() - start).toFixed(2)}`),
               );
             }}
           >
@@ -58,10 +61,14 @@ class App extends Component {
             href="#"
             onClick={() => {
               // checks for method exists or not directly
-              if (window.MyJSInterface.someMethodThatNotExists) {
-                window.MyJSInterface.someMethodThatNotExists().catch((err) => alert(err.message));
+              if (window.CoreJSInterface.someMethodThatNotExists) {
+                window.CoreJSInterface.someMethodThatNotExists().catch((err) => 
+                    //alert(err.message)
+                    console.log(err.message)
+                  );
               } else {
-                alert('method is not exist: someMethodThatNotExists()');
+                console.log("method is not exist: someMethodThatNotExists()")
+                //alert('method is not exist: someMethodThatNotExists()');
               }
             }}
           >

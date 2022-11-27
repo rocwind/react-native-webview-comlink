@@ -10,6 +10,7 @@ import {
 import { InterfaceProvider, isEnabledGetter } from './InterfaceProvider';
 import { Logger, createLogger } from '../common/logger';
 import { WebScriptComposer } from './WebScriptComposer';
+import { CoreJSInterface } from '../common/types';
 
 // to workaround the issue that on some Android device load script on page start
 // may get cleared after page starting load, we try to inject js on both load start
@@ -53,7 +54,7 @@ interface RefForwardingProps {
  * @param config
  */
 export function withJavascriptInterface<Props extends WebViewProps>(
-    rootObj: any,
+    rootObj: CoreJSInterface,
     name: string,
     options?: Options,
 ): HigherOrderComponentCreator<Props> {

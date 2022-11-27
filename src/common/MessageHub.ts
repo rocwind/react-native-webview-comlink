@@ -113,12 +113,18 @@ export class MessageHub implements Channel {
     }
 
     handleMessage(msg: string): void {
+        console.log("handleMessage :: msg : "+msg);
         const data: Message = JSON.parse(msg.substr(this.tag.length));
+        console.log("handleMessage :: msg : "+this.localFunctionByID);
+        for (const key in this.localFunctionByID) {
+            console.log("localFunctionByID item : "+this.localFunctionByID[key])
+        }
         switch (data.type) {
             case MessageType.REQUEST: {
                 const { id, args, rid } = data;
                 Promise.resolve()
                     .then(() => {
+                        console.log("handleMessage :: msg : "+msg);
                         const localFunction = this.localFunctionByID[id]?.localFunction;
                         if (!localFunction) {
                             throw new Error(`failed to invoke function, ${id} is missing`);
@@ -129,6 +135,7 @@ export class MessageHub implements Channel {
                         );
                     })
                     .then((value) => {
+                        console.log("handleMessage :: sending message : "+msg);
                         this.sendMessage({
                             type: MessageType.RESPONSE,
                             ret: toWireValue(value, this),

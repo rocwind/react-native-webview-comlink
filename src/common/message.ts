@@ -1,5 +1,7 @@
 import { generateID } from './utils';
 
+
+
 export const enum WireValueType {
     RAW = 'R',
     PROXY = 'P',
@@ -110,6 +112,8 @@ export function toWireValue(value: unknown, channel: Channel): WireValue {
 }
 
 export function fromWireValue(value: WireValue, channel: Channel): unknown {
+    console.log("fromWireValue :: value "+JSON.stringify(value));
+    console.log("fromWireValue :: channel "+JSON.stringify(channel));
     switch (value.type) {
         case WireValueType.RAW:
             return value.val;
@@ -132,6 +136,8 @@ export function fromWireValue(value: WireValue, channel: Channel): unknown {
 }
 
 export function createRemoteFunction(id: number, vid: number, channel: Channel): RemoteFunction {
+    console.log("createRemoteFunction :: id "+id+ " vid: "+vid);
+    console.log("createRemoteFunction :: channel "+channel);
     let refCount = 1;
     let latestVid = vid;
     const cleanup = () => {
@@ -149,6 +155,7 @@ export function createRemoteFunction(id: number, vid: number, channel: Channel):
     };
     return Object.assign(
         (...args: unknown[]) => {
+            console.log("channel:: "+JSON.stringify(channel));
             return channel
                 .requestResponse({
                     type: MessageType.REQUEST,
