@@ -46,6 +46,7 @@ export class MessageHub implements Channel {
     }
 
     private sendMessage(msg: Message): void {
+        console.log("sendMessage:: Message"+JSON.stringify(msg))
         this.endpoint.postMessage(this.tag + JSON.stringify(msg));
     }
 
@@ -54,6 +55,7 @@ export class MessageHub implements Channel {
     }
 
     requestResponse(msg: RequestMessage): Promise<WireValue> {
+        console.log("requestResponse:: RequestMessage"+msg)
         return new Promise<WireValue>((resolve) => {
             this.resolveByRequestID[msg.rid] = resolve;
             this.sendMessage(msg);
@@ -113,7 +115,7 @@ export class MessageHub implements Channel {
     }
 
     handleMessage(msg: string): void {
-        console.log("handleMessage :: msg : "+msg);
+        this.logger("handleMessage :: msg : "+msg);
         const data: Message = JSON.parse(msg.substr(this.tag.length));
         console.log("handleMessage :: msg : "+this.localFunctionByID);
         for (const key in this.localFunctionByID) {
@@ -124,6 +126,7 @@ export class MessageHub implements Channel {
                 const { id, args, rid } = data;
                 Promise.resolve()
                     .then(() => {
+                        // IMPORTANT: Message from Web received now calling relevant interface function
                         console.log("handleMessage :: msg : "+msg);
                         const localFunction = this.localFunctionByID[id]?.localFunction;
                         if (!localFunction) {

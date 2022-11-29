@@ -6,6 +6,12 @@ import './App.css';
 
 console.log('app script loaded');
 
+const onMobileToWebEvent = (data) => {
+  // TODO
+  console.log("onMobileToWebEvent :: data :"+data);
+
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -14,17 +20,11 @@ class App extends Component {
       userSelected: 'not started',
     };
     console.log('app constructor');
+    window.CoreJSInterface.setMobileInterface( onMobileToWebEvent )
   }
 
   handleClick = () => {
     window.CoreJSInterface.webToMobile("Testing My Event");
-    // window.MyJSInterface.alert(
-    //   'Web',
-    //   'Called by web page, please select',
-    //   // callbacks can be handled
-    //   () => this.setState({ userSelected: 'YES' }),
-    //   () => this.setState({ userSelected: 'NO' }),
-    // );
   };
 
   render() {

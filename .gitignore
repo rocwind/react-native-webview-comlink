@@ -1,4 +1,14 @@
+# node generated folders
 node_modules/
 lib/
+yarn-error.log
 
+# mac temp file
 .DS_Store
+
+# Android studio file
+modules.xml
+*.iml
+vcs.xml
+workspace.xml
+

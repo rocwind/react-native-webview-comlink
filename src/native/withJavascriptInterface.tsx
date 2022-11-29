@@ -49,6 +49,9 @@ interface RefForwardingProps {
 
 /**
  * wrap webview component with JavascriptInterface
+ * This function is called from react native application
+ * 1. This will inject all the functions declared by CoreJSInterface into Web
+ * 
  * @param rootObj the root object exposed as JavascriptInterface
  * @param name the name for the exposed object - window[name] in web side
  * @param config
@@ -115,7 +118,7 @@ export function withJavascriptInterface<Props extends WebViewProps>(
                     }
                 }
             };
-
+           
             onMessage = (event: WebViewMessageEvent) => {
                 const handled = this.provider.onMessage(event);
                 if (handled) {
