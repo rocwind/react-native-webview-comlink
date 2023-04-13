@@ -10,7 +10,7 @@
 
 ### Native
 
-```
+```typescript
 import { WebView } from 'react-native-webview';
 import { withJavascriptInterface, Remote } from 'react-native-webview-comlink';
 // it's not necessary but recommended to put the interface definition at some common
@@ -46,7 +46,7 @@ const WebViewComponent = withJavascriptInterface(rootObj, 'MyJSInterface')(WebVi
 
 ### Web
 
-```
+```typescript
 import { JavascriptInterface } from 'react-native-webview-comlink';
 import { MyJSInterface } from './common/types';
 
