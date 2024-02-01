@@ -49,7 +49,7 @@
     "@rollup/plugin-commonjs": "25.0.7",
     "@rollup/plugin-node-resolve": "15.2.3",
     "@types/hoist-non-react-statics": "3.3.5",
-    "@types/jest": "29.5.11",
+    "@types/jest": "29.5.12",
     "@types/react": "18.2.51",
     "@types/react-native": "0.72.8",
     "concurrently": "8.2.2",
