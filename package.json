@@ -48,7 +48,7 @@
     "@rollup/plugin-babel": "6.0.4",
     "@rollup/plugin-commonjs": "28.0.6",
     "@rollup/plugin-node-resolve": "16.0.1",
-    "@types/hoist-non-react-statics": "3.3.6",
+    "@types/hoist-non-react-statics": "3.3.7",
     "@types/jest": "29.5.14",
     "@types/react": "19.1.8",
     "@types/react-native": "0.73.0",
