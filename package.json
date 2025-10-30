@@ -46,7 +46,7 @@
     "@babel/preset-env": "7.28.5",
     "@babel/runtime": "7.28.4",
     "@rollup/plugin-babel": "6.1.0",
-    "@rollup/plugin-commonjs": "28.0.9",
+    "@rollup/plugin-commonjs": "29.0.0",
     "@rollup/plugin-node-resolve": "16.0.3",
     "@types/hoist-non-react-statics": "3.3.7",
     "@types/jest": "29.5.14",
